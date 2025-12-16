@@ -1,0 +1,7 @@
+# Development dependencies
+-r requirements.txt
+
+# Additional development tools
+pre-commit==3.5.0
+jupyter==1.0.0
+ipython==8.17.2
