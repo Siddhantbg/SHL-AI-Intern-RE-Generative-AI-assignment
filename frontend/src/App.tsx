@@ -13,6 +13,9 @@ function App() {
   const [currentQuery, setCurrentQuery] = useState<string>('');
   const [apiStatus, setApiStatus] = useState<'checking' | 'online' | 'offline'>('checking');
 
+  // Debug: Add console log to verify React is running
+  console.log('App component rendering...');
+
   // Check API health on component mount
   useEffect(() => {
     checkApiHealth();
@@ -81,11 +84,29 @@ function App() {
     }
   };
 
+  // Simple test to ensure React is working
+  if (typeof window !== 'undefined') {
+    console.log('React App is running in browser');
+  }
+
   return (
     <ErrorBoundary>
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gray-50" style={{ minHeight: '100vh', backgroundColor: '#f9fafb', padding: '20px' }}>
+        {/* Simple test header */}
+        <div style={{ backgroundColor: 'white', padding: '20px', marginBottom: '20px', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+          <h1 style={{ fontSize: '24px', fontWeight: 'bold', color: '#111827', margin: '0 0 8px 0' }}>
+            SHL Assessment Recommender
+          </h1>
+          <p style={{ fontSize: '14px', color: '#6b7280', margin: '0' }}>
+            Find the right assessments for your hiring needs
+          </p>
+          <div style={{ marginTop: '10px' }}>
+            {getApiStatusIndicator()}
+          </div>
+        </div>
+
         {/* Header */}
-        <header className="bg-white shadow-sm border-b border-gray-200">
+        <header className="bg-white shadow-sm border-b border-gray-200" style={{ backgroundColor: 'white', borderBottom: '1px solid #e5e7eb', boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)', display: 'none' }}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center py-4">
               <div>
