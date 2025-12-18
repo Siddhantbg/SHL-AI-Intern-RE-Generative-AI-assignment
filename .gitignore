@@ -295,3 +295,18 @@ desktop.ini
 *.backup
 *.bak
 *~
+
+# Specific unnecessary files for this project
+Gen_AI_Dataset.xlsx
+SHL_AI_Intern_RE_Generative_AI_assignment.pdf
+Makefile
+.pre-commit-config.yaml
+process_scraped_data.py
+run_training_evaluation.py
+requirements-dev.txt
+
+# GitHub workflows (if not needed for deployment)
+.github/
+
+# Deployment folder (if contains only configs, keep individual files)
+deployment/
