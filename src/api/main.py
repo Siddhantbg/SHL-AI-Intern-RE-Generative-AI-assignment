@@ -57,7 +57,7 @@ app = FastAPI(
 
 # Add CORS middleware
 cors_origins = ["*"] if settings.debug else [
-    "https://your-frontend.vercel.app",
+    "https://shl-ai-intern-re-generative-ai-assi.vercel.app",
     "https://localhost:3000",
     "http://localhost:3000"
 ]
