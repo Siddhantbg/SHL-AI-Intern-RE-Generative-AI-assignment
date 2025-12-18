@@ -87,7 +87,7 @@ class QueryProcessor:
                 else:
                     # Legacy package initialization
                     genai.configure(api_key=self.settings.gemini_api_key)
-                    self.gemini_model = genai.GenerativeModel('gemini-pro')
+                    self.gemini_model = genai.GenerativeModel('gemini-1.5-flash')
                 logger.info(f"Gemini LLM initialized successfully using {GENAI_PACKAGE}")
             else:
                 logger.warning("Gemini API key not found, will use fallback methods only")
