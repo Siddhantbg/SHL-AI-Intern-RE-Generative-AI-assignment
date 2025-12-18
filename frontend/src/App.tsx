@@ -1,7 +1,24 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 const App = () => {
   console.log('🚀 SHL App component loaded');
+  const [apiStatus, setApiStatus] = useState('checking');
+  const [apiUrl] = useState(process.env.REACT_APP_API_URL || 'Not configured');
+  
+  useEffect(() => {
+    console.log('🔗 API URL:', apiUrl);
+    
+    // Test API connection
+    fetch(`${process.env.REACT_APP_API_URL}/health`)
+      .then(response => {
+        console.log('✅ API Response:', response.status);
+        setApiStatus(response.ok ? 'online' : 'error');
+      })
+      .catch(error => {
+        console.error('❌ API Error:', error);
+        setApiStatus('offline');
+      });
+  }, [apiUrl]);
   
   return React.createElement('div', {
     style: { 
@@ -55,8 +72,8 @@ const App = () => {
           style: { margin: '0', color: '#059669' }
         }, '✅ Frontend: Successfully deployed on Vercel'),
         React.createElement('p', {
-          style: { margin: '8px 0 0 0', color: '#059669' }
-        }, '✅ Backend: Running at shl-ai-intern-re-generative-ai-assignment.onrender.com')
+          style: { margin: '8px 0 0 0', color: apiStatus === 'online' ? '#059669' : '#dc2626' }
+        }, `${apiStatus === 'online' ? '✅' : '❌'} Backend: ${apiStatus} (${apiUrl})`)
       ),
 
       React.createElement('div', {
