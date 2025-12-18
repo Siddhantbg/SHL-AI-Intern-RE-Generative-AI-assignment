@@ -125,9 +125,41 @@ async def startup_event() -> None:
         # Try to load existing database
         try:
             vector_db.load_database()
-            logger.info("Loaded existing vector database")
+            stats = vector_db.get_database_stats()
+            logger.info(f"Loaded existing vector database with {stats.get('total_assessments', 0)} assessments")
         except FileNotFoundError:
-            logger.warning("No existing vector database found. System will work with empty database.")
+            logger.warning("No existing vector database found. Attempting to initialize from scraped data...")
+            # Try to initialize from scraped data
+            try:
+                import json
+                assessments_file = settings.data_dir / 'scraped' / 'assessments.json'
+                if assessments_file.exists():
+                    with open(assessments_file, 'r', encoding='utf-8') as f:
+                        assessments = json.load(f)
+                    
+                    logger.info(f"Loading {len(assessments)} assessments from scraped data...")
+                    for assessment in assessments:
+                        try:
+                            vector_db.add_assessment(
+                                assessment_id=assessment.get('id', ''),
+                                name=assessment.get('name', ''),
+                                description=assessment.get('description', ''),
+                                url=assessment.get('url', ''),
+                                test_type=assessment.get('test_type', ''),
+                                category=assessment.get('category', ''),
+                                skills=assessment.get('skills', [])
+                            )
+                        except Exception as e:
+                            logger.error(f"Failed to add assessment {assessment.get('id', 'unknown')}: {str(e)}")
+                    
+                    vector_db.save_database()
+                    stats = vector_db.get_database_stats()
+                    logger.info(f"Initialized database with {stats.get('total_assessments', 0)} assessments")
+                else:
+                    logger.warning("No scraped assessments file found. Starting with empty database.")
+            except Exception as e:
+                logger.error(f"Failed to initialize from scraped data: {str(e)}")
+                logger.info("Starting with empty vector database")
         except Exception as e:
             logger.error(f"Failed to load vector database: {str(e)}")
             logger.info("Starting with empty vector database")
