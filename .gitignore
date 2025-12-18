@@ -179,3 +179,119 @@ scraped_data/
 embeddings/
 vector_db/
 evaluation_results/
+
+# Test files and directories
+tests/
+*test*.py
+test_*.py
+*_test.py
+demo_*.py
+analyze_*.py
+load_test.py
+security_audit.py
+final_qa_report.py
+validate_submission.py
+generate_test_predictions.py
+
+# Documentation (keep only README.md)
+docs/
+*.md
+!README.md
+
+# Kiro project files
+.kiro/
+
+# Example and demo files
+examples/
+scripts/
+
+# QA and analysis files
+final_qa_report_*.json
+htmlcov/
+coverage.xml
+.coverage
+
+# Temporary and generated files
+temp/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~
+
+# IDE and editor files
+*.sublime-*
+.idea/
+.vscode/
+*.code-workspace
+
+# Build and deployment artifacts
+build/
+dist/
+*.egg-info/
+
+# Frontend build (keep source, ignore build artifacts)
+frontend/build/
+frontend/node_modules/
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+
+# Python cache and compiled files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Virtual environments
+venv/
+env/
+.venv/
+.env/
+
+# Data directories (keep structure, ignore content)
+data/scraped/
+data/processed/
+data/embeddings/
+data/evaluation/predictions/
+data/evaluation/results/
+data/vector_db/
+
+# Keep data directory structure but ignore large files
+data/**/*.pkl
+data/**/*.csv
+data/**/*.json
+data/**/*.h5
+data/**/*.bin
+
+# Logs and monitoring
+logs/
+*.log
+monitoring/
+
+# Deployment specific (keep configs, ignore secrets)
+.env
+.env.local
+.env.production
+secrets/
+credentials/
+
+# OS and system files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Backup files
+*.backup
+*.bak
+*~
