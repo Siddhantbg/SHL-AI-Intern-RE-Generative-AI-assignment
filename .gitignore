@@ -310,3 +310,7 @@ requirements-dev.txt
 
 # Deployment folder (if contains only configs, keep individual files)
 deployment/
+
+# Cleanup scripts (temporary)
+cleanup_repo.py
+git_cleanup_commands.txt
