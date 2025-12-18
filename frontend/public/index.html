@@ -57,19 +57,26 @@
         const apiUrl = 'https://shl-ai-intern-re-generative-ai-assignment.onrender.com';
         const statusEl = document.getElementById('api-status');
         
-        fetch(apiUrl + '/health')
+        statusEl.innerHTML = '🔄 Backend: Waking up server (this may take 30-60 seconds)...';
+        statusEl.style.color = '#f59e0b';
+        
+        // Render.com free tier sleeps after 15 minutes, takes time to wake up
+        fetch(apiUrl + '/health', { 
+          method: 'GET',
+          headers: { 'Cache-Control': 'no-cache' }
+        })
           .then(response => {
             if (response.ok) {
               statusEl.innerHTML = '✅ Backend: Online and connected';
               statusEl.style.color = '#059669';
             } else {
-              statusEl.innerHTML = '❌ Backend: Error ' + response.status;
+              statusEl.innerHTML = `❌ Backend: Error ${response.status} - <button onclick="testAPIConnection()" style="background: #3b82f6; color: white; padding: 4px 8px; border: none; border-radius: 3px; cursor: pointer; font-size: 12px;">Retry</button>`;
               statusEl.style.color = '#dc2626';
             }
           })
           .catch(error => {
-            statusEl.innerHTML = '❌ Backend: Connection failed';
-            statusEl.style.color = '#dc2626';
+            statusEl.innerHTML = `🔄 Backend: Sleeping (free tier) - <button onclick="testAPIConnection()" style="background: #3b82f6; color: white; padding: 4px 8px; border: none; border-radius: 3px; cursor: pointer; font-size: 12px;">Wake Up Server</button>`;
+            statusEl.style.color = '#f59e0b';
             console.error('API Error:', error);
           });
       }
@@ -83,7 +90,12 @@
           return;
         }
         
-        resultEl.innerHTML = '<p style="color: #3b82f6;">🔄 Testing API...</p>';
+        if (query.length < 10) {
+          resultEl.innerHTML = '<p style="color: #f59e0b;">Please enter at least 10 characters for a proper test</p>';
+          return;
+        }
+        
+        resultEl.innerHTML = '<p style="color: #3b82f6;">🔄 Testing API... (may take 30-60 seconds if server is sleeping)</p>';
         
         fetch('https://shl-ai-intern-re-generative-ai-assignment.onrender.com/recommend', {
           method: 'POST',
@@ -92,12 +104,21 @@
           },
           body: JSON.stringify({ query: query })
         })
-        .then(response => response.json())
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
+          return response.json();
+        })
         .then(data => {
           resultEl.innerHTML = `<p style="color: #059669;">✅ API Test Successful!</p><pre style="background: #f3f4f6; padding: 10px; border-radius: 4px; font-size: 12px; overflow-x: auto;">${JSON.stringify(data, null, 2)}</pre>`;
         })
         .catch(error => {
-          resultEl.innerHTML = `<p style="color: #dc2626;">❌ API Test Failed: ${error.message}</p>`;
+          if (error.message.includes('502') || error.message.includes('Failed to fetch')) {
+            resultEl.innerHTML = `<p style="color: #f59e0b;">🔄 Server is sleeping (free tier). <button onclick="testAPI()" style="background: #3b82f6; color: white; padding: 4px 8px; border: none; border-radius: 3px; cursor: pointer;">Try Again</button></p>`;
+          } else {
+            resultEl.innerHTML = `<p style="color: #dc2626;">❌ API Test Failed: ${error.message}</p>`;
+          }
         });
       }
       
