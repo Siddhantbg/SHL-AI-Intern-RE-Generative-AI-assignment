@@ -1,95 +1,89 @@
 import React from 'react';
 
-function App() {
+const App = () => {
   console.log('🚀 SHL App component loaded');
-  console.log('📍 Environment:', process.env.NODE_ENV);
-  console.log('🔗 API URL:', process.env.REACT_APP_API_URL);
-  console.log('⚛️ React version:', React.version);
   
-  // Test if DOM is ready
-  if (typeof window !== 'undefined') {
-    console.log('🌐 Window object available');
-    console.log('📱 User Agent:', navigator.userAgent);
-  }
-  
-  // Test if component renders
-  console.log('🎨 About to render JSX...');
-  
-  return (
-    <div style={{ 
+  return React.createElement('div', {
+    style: { 
       minHeight: '100vh', 
       backgroundColor: '#f3f4f6', 
       padding: '20px',
       fontFamily: 'Arial, sans-serif'
-    }}>
-      <div style={{ 
+    }
+  }, 
+    React.createElement('div', {
+      style: { 
         backgroundColor: 'white', 
         padding: '30px', 
         borderRadius: '8px', 
         boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
         maxWidth: '800px',
         margin: '0 auto'
-      }}>
-        <h1 style={{ 
+      }
+    },
+      React.createElement('h1', {
+        style: { 
           fontSize: '32px', 
           fontWeight: 'bold', 
           color: '#1f2937', 
           margin: '0 0 16px 0',
           textAlign: 'center'
-        }}>
-          🎯 SHL Assessment Recommender
-        </h1>
-        
-        <p style={{ 
+        }
+      }, '🎯 SHL Assessment Recommender'),
+      
+      React.createElement('p', {
+        style: { 
           fontSize: '16px', 
           color: '#6b7280', 
           margin: '0 0 24px 0',
           textAlign: 'center'
-        }}>
-          Find the right assessments for your hiring needs
-        </p>
+        }
+      }, 'Find the right assessments for your hiring needs'),
 
-        <div style={{
+      React.createElement('div', {
+        style: {
           backgroundColor: '#f9fafb',
           padding: '20px',
           borderRadius: '6px',
           border: '1px solid #e5e7eb'
-        }}>
-          <h2 style={{ fontSize: '18px', margin: '0 0 12px 0', color: '#374151' }}>
-            🚀 System Status
-          </h2>
-          <p style={{ margin: '0', color: '#059669' }}>
-            ✅ Frontend: Successfully deployed on Vercel
-          </p>
-          <p style={{ margin: '8px 0 0 0', color: '#059669' }}>
-            ✅ Backend: Running at shl-ai-intern-re-generative-ai-assignment.onrender.com
-          </p>
-        </div>
+        }
+      },
+        React.createElement('h2', {
+          style: { fontSize: '18px', margin: '0 0 12px 0', color: '#374151' }
+        }, '🚀 System Status'),
+        React.createElement('p', {
+          style: { margin: '0', color: '#059669' }
+        }, '✅ Frontend: Successfully deployed on Vercel'),
+        React.createElement('p', {
+          style: { margin: '8px 0 0 0', color: '#059669' }
+        }, '✅ Backend: Running at shl-ai-intern-re-generative-ai-assignment.onrender.com')
+      ),
 
-        <div style={{
+      React.createElement('div', {
+        style: {
           marginTop: '24px',
           padding: '20px',
           backgroundColor: '#eff6ff',
           borderRadius: '6px',
           border: '1px solid #bfdbfe'
-        }}>
-          <h3 style={{ fontSize: '16px', margin: '0 0 12px 0', color: '#1e40af' }}>
-            📝 Next Steps
-          </h3>
-          <p style={{ margin: '0 0 8px 0', color: '#1e40af' }}>
-            1. Add environment variables to Vercel
-          </p>
-          <p style={{ margin: '0 0 8px 0', color: '#1e40af' }}>
-            2. Redeploy with full React components
-          </p>
-          <p style={{ margin: '0', color: '#1e40af' }}>
-            3. Test API connection
-          </p>
-        </div>
-      </div>
-    </div>
+        }
+      },
+        React.createElement('h3', {
+          style: { fontSize: '16px', margin: '0 0 12px 0', color: '#1e40af' }
+        }, '📝 React is Working!'),
+        React.createElement('p', {
+          style: { margin: '0 0 8px 0', color: '#1e40af' }
+        }, '✅ React components are rendering'),
+        React.createElement('p', {
+          style: { margin: '0 0 8px 0', color: '#1e40af' }
+        }, '✅ JavaScript bundle loaded successfully'),
+        React.createElement('p', {
+          style: { margin: '0', color: '#1e40af' }
+        }, '✅ Ready to add full functionality')
+      )
+    )
   );
-}
+};
 
         {/* Main Content */}
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
