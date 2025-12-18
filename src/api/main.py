@@ -59,10 +59,9 @@ app = FastAPI(
 cors_origins = ["*"] if settings.debug else [
     "https://shl-ai-intern-re-generative-ai-assi.vercel.app",
     "https://shl-ai-intern-re-generative-ai-assignment.vercel.app",
-    "https://shl-ai-intern-re-generative-git-81c896-siddhant-bhagats-projects.vercel.app",
-    "https://shl-ai-intern-re-generative-ai-assignment-nq5w937y4.vercel.app",
     "https://localhost:3000",
-    "http://localhost:3000"
+    "http://localhost:3000",
+    "*"  # Temporary fix for CORS issues
 ]
 
 app.add_middleware(
