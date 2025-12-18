@@ -309,10 +309,13 @@ async def get_system_stats():
 if __name__ == "__main__":
     import uvicorn
     
+    # Use Render.com's PORT environment variable if available
+    port = int(os.environ.get("PORT", settings.api_port))
+    
     uvicorn.run(
         "src.api.main:app",
-        host=settings.api_host,
-        port=settings.api_port,
+        host="0.0.0.0",  # Bind to all interfaces for Render.com
+        port=port,
         reload=settings.debug,
         log_level=settings.log_level.lower(),
     )
