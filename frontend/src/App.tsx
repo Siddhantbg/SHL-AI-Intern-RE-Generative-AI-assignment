@@ -1,7 +1,19 @@
 import React from 'react';
 
 function App() {
-  console.log('SHL App is rendering...');
+  console.log('🚀 SHL App component loaded');
+  console.log('📍 Environment:', process.env.NODE_ENV);
+  console.log('🔗 API URL:', process.env.REACT_APP_API_URL);
+  console.log('⚛️ React version:', React.version);
+  
+  // Test if DOM is ready
+  if (typeof window !== 'undefined') {
+    console.log('🌐 Window object available');
+    console.log('📱 User Agent:', navigator.userAgent);
+  }
+  
+  // Test if component renders
+  console.log('🎨 About to render JSX...');
   
   return (
     <div style={{ 

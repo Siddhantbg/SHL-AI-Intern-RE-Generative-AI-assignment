@@ -15,7 +15,31 @@
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
+    <div id="root">
+      <!-- Fallback content while React loads -->
+      <div style="padding: 20px; text-align: center; font-family: Arial, sans-serif;">
+        <h1>🔄 Loading SHL Assessment Recommender...</h1>
+        <p>If this message persists, check the browser console for errors.</p>
+      </div>
+    </div>
+    
+    <script>
+      console.log('🌐 HTML loaded, waiting for React...');
+      console.log('📍 Current URL:', window.location.href);
+      console.log('🔧 User Agent:', navigator.userAgent);
+      
+      // Check if root element exists
+      const rootEl = document.getElementById('root');
+      console.log('🎯 Root element found:', !!rootEl);
+      
+      // Monitor for React mounting
+      setTimeout(() => {
+        const rootContent = document.getElementById('root').innerHTML;
+        if (rootContent.includes('Loading SHL Assessment')) {
+          console.error('❌ React failed to mount after 5 seconds');
+        }
+      }, 5000);
+    </script>
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.
