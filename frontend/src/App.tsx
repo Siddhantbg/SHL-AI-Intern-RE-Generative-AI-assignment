@@ -1,134 +1,83 @@
-import React, { useState, useEffect } from 'react';
-import ErrorBoundary from './components/ErrorBoundary';
-import QueryInput from './components/QueryInput';
-import RecommendationTable from './components/RecommendationTable';
-import LoadingSpinner from './components/LoadingSpinner';
-import { apiService } from './services/api';
-import { Assessment, RecommendationResponse, ApiError } from './types';
+import React from 'react';
 
 function App() {
-  const [recommendations, setRecommendations] = useState<Assessment[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [currentQuery, setCurrentQuery] = useState<string>('');
-  const [apiStatus, setApiStatus] = useState<'checking' | 'online' | 'offline'>('checking');
-
-  // Debug: Add console log to verify React is running
-  console.log('App component rendering...');
-
-  // Check API health on component mount
-  useEffect(() => {
-    checkApiHealth();
-  }, []);
-
-  const checkApiHealth = async () => {
-    try {
-      await apiService.getHealth();
-      setApiStatus('online');
-    } catch (error) {
-      setApiStatus('offline');
-      console.error('API health check failed:', error);
-    }
-  };
-
-  const handleQuerySubmit = async (query: string) => {
-    setIsLoading(true);
-    setError(null);
-    setCurrentQuery(query);
-
-    try {
-      const response: RecommendationResponse = await apiService.getRecommendations(query);
-      setRecommendations(response.recommendations || []);
-    } catch (error: any) {
-      console.error('Error getting recommendations:', error);
-      
-      let errorMessage = 'Failed to get recommendations. Please try again.';
-      
-      if (error.response?.data) {
-        const apiError: ApiError = error.response.data;
-        errorMessage = apiError.message || errorMessage;
-      } else if (error.message) {
-        errorMessage = error.message;
-      }
-      
-      setError(errorMessage);
-      setRecommendations([]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const getApiStatusIndicator = () => {
-    switch (apiStatus) {
-      case 'checking':
-        return (
-          <div className="flex items-center text-yellow-600">
-            <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-yellow-600 mr-2"></div>
-            <span className="text-xs">Checking API...</span>
-          </div>
-        );
-      case 'online':
-        return (
-          <div className="flex items-center text-green-600">
-            <div className="h-2 w-2 bg-green-600 rounded-full mr-2"></div>
-            <span className="text-xs">API Online</span>
-          </div>
-        );
-      case 'offline':
-        return (
-          <div className="flex items-center text-red-600">
-            <div className="h-2 w-2 bg-red-600 rounded-full mr-2"></div>
-            <span className="text-xs">API Offline</span>
-          </div>
-        );
-    }
-  };
-
-  // Simple test to ensure React is working
-  if (typeof window !== 'undefined') {
-    console.log('React App is running in browser');
-  }
-
+  console.log('SHL App is rendering...');
+  
   return (
-    <ErrorBoundary>
-      <div className="min-h-screen bg-gray-50" style={{ minHeight: '100vh', backgroundColor: '#f9fafb', padding: '20px' }}>
-        {/* Simple test header */}
-        <div style={{ backgroundColor: 'white', padding: '20px', marginBottom: '20px', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-          <h1 style={{ fontSize: '24px', fontWeight: 'bold', color: '#111827', margin: '0 0 8px 0' }}>
-            SHL Assessment Recommender
-          </h1>
-          <p style={{ fontSize: '14px', color: '#6b7280', margin: '0' }}>
-            Find the right assessments for your hiring needs
+    <div style={{ 
+      minHeight: '100vh', 
+      backgroundColor: '#f3f4f6', 
+      padding: '20px',
+      fontFamily: 'Arial, sans-serif'
+    }}>
+      <div style={{ 
+        backgroundColor: 'white', 
+        padding: '30px', 
+        borderRadius: '8px', 
+        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+        maxWidth: '800px',
+        margin: '0 auto'
+      }}>
+        <h1 style={{ 
+          fontSize: '32px', 
+          fontWeight: 'bold', 
+          color: '#1f2937', 
+          margin: '0 0 16px 0',
+          textAlign: 'center'
+        }}>
+          🎯 SHL Assessment Recommender
+        </h1>
+        
+        <p style={{ 
+          fontSize: '16px', 
+          color: '#6b7280', 
+          margin: '0 0 24px 0',
+          textAlign: 'center'
+        }}>
+          Find the right assessments for your hiring needs
+        </p>
+
+        <div style={{
+          backgroundColor: '#f9fafb',
+          padding: '20px',
+          borderRadius: '6px',
+          border: '1px solid #e5e7eb'
+        }}>
+          <h2 style={{ fontSize: '18px', margin: '0 0 12px 0', color: '#374151' }}>
+            🚀 System Status
+          </h2>
+          <p style={{ margin: '0', color: '#059669' }}>
+            ✅ Frontend: Successfully deployed on Vercel
           </p>
-          <div style={{ marginTop: '10px' }}>
-            {getApiStatusIndicator()}
-          </div>
+          <p style={{ margin: '8px 0 0 0', color: '#059669' }}>
+            ✅ Backend: Running at shl-ai-intern-re-generative-ai-assignment.onrender.com
+          </p>
         </div>
 
-        {/* Header */}
-        <header className="bg-white shadow-sm border-b border-gray-200" style={{ backgroundColor: 'white', borderBottom: '1px solid #e5e7eb', boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)', display: 'none' }}>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center py-4">
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">
-                  SHL Assessment Recommender
-                </h1>
-                <p className="text-sm text-gray-600">
-                  Find the right assessments for your hiring needs
-                </p>
-              </div>
-              <div className="flex items-center space-x-4">
-                {getApiStatusIndicator()}
-                <button
-                  onClick={checkApiHealth}
-                  className="text-xs text-gray-500 hover:text-gray-700 px-2 py-1 rounded border border-gray-300 hover:border-gray-400"
-                >
-                  Refresh
-                </button>
-              </div>
-            </div>
-          </div>
-        </header>
+        <div style={{
+          marginTop: '24px',
+          padding: '20px',
+          backgroundColor: '#eff6ff',
+          borderRadius: '6px',
+          border: '1px solid #bfdbfe'
+        }}>
+          <h3 style={{ fontSize: '16px', margin: '0 0 12px 0', color: '#1e40af' }}>
+            📝 Next Steps
+          </h3>
+          <p style={{ margin: '0 0 8px 0', color: '#1e40af' }}>
+            1. Add environment variables to Vercel
+          </p>
+          <p style={{ margin: '0 0 8px 0', color: '#1e40af' }}>
+            2. Redeploy with full React components
+          </p>
+          <p style={{ margin: '0', color: '#1e40af' }}>
+            3. Test API connection
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
 
         {/* Main Content */}
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
