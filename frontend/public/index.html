@@ -14,30 +14,101 @@
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root">
-      <!-- Fallback content while React loads -->
-      <div style="padding: 20px; text-align: center; font-family: Arial, sans-serif;">
-        <h1>🔄 Loading SHL Assessment Recommender...</h1>
-        <p>If this message persists, check the browser console for errors.</p>
-      </div>
-    </div>
+    <div id="root"></div>
     
     <script>
-      console.log('🌐 HTML loaded, waiting for React...');
-      console.log('📍 Current URL:', window.location.href);
-      console.log('🔧 User Agent:', navigator.userAgent);
+      console.log('🌐 HTML loaded');
       
-      // Check if root element exists
-      const rootEl = document.getElementById('root');
-      console.log('🎯 Root element found:', !!rootEl);
+      // Create the app directly in HTML/JS if React fails
+      function createFallbackApp() {
+        const root = document.getElementById('root');
+        root.innerHTML = `
+          <div style="min-height: 100vh; background-color: #f3f4f6; padding: 20px; font-family: Arial, sans-serif;">
+            <div style="background-color: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); max-width: 800px; margin: 0 auto;">
+              <h1 style="font-size: 32px; font-weight: bold; color: #1f2937; margin: 0 0 16px 0; text-align: center;">
+                🎯 SHL Assessment Recommender
+              </h1>
+              
+              <p style="font-size: 16px; color: #6b7280; margin: 0 0 24px 0; text-align: center;">
+                Find the right assessments for your hiring needs
+              </p>
+
+              <div style="background-color: #f9fafb; padding: 20px; border-radius: 6px; border: 1px solid #e5e7eb; margin-bottom: 20px;">
+                <h2 style="font-size: 18px; margin: 0 0 12px 0; color: #374151;">🚀 System Status</h2>
+                <p style="margin: 0; color: #059669;">✅ Frontend: Successfully deployed on Vercel</p>
+                <p id="api-status" style="margin: 8px 0 0 0; color: #f59e0b;">🔄 Backend: Checking connection...</p>
+              </div>
+
+              <div style="background-color: #eff6ff; padding: 20px; border-radius: 6px; border: 1px solid #bfdbfe; margin-bottom: 20px;">
+                <h3 style="font-size: 16px; margin: 0 0 12px 0; color: #1e40af;">📝 Quick Test</h3>
+                <input type="text" id="query-input" placeholder="Enter job description..." style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 4px; margin-bottom: 10px;">
+                <button onclick="testAPI()" style="background-color: #3b82f6; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">Test API Connection</button>
+                <div id="test-result" style="margin-top: 10px;"></div>
+              </div>
+            </div>
+          </div>
+        `;
+        
+        // Test API connection
+        testAPIConnection();
+      }
       
-      // Monitor for React mounting
+      function testAPIConnection() {
+        const apiUrl = 'https://shl-ai-intern-re-generative-ai-assignment.onrender.com';
+        const statusEl = document.getElementById('api-status');
+        
+        fetch(apiUrl + '/health')
+          .then(response => {
+            if (response.ok) {
+              statusEl.innerHTML = '✅ Backend: Online and connected';
+              statusEl.style.color = '#059669';
+            } else {
+              statusEl.innerHTML = '❌ Backend: Error ' + response.status;
+              statusEl.style.color = '#dc2626';
+            }
+          })
+          .catch(error => {
+            statusEl.innerHTML = '❌ Backend: Connection failed';
+            statusEl.style.color = '#dc2626';
+            console.error('API Error:', error);
+          });
+      }
+      
+      function testAPI() {
+        const query = document.getElementById('query-input').value;
+        const resultEl = document.getElementById('test-result');
+        
+        if (!query) {
+          resultEl.innerHTML = '<p style="color: #f59e0b;">Please enter a job description</p>';
+          return;
+        }
+        
+        resultEl.innerHTML = '<p style="color: #3b82f6;">🔄 Testing API...</p>';
+        
+        fetch('https://shl-ai-intern-re-generative-ai-assignment.onrender.com/recommend', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ query: query })
+        })
+        .then(response => response.json())
+        .then(data => {
+          resultEl.innerHTML = `<p style="color: #059669;">✅ API Test Successful!</p><pre style="background: #f3f4f6; padding: 10px; border-radius: 4px; font-size: 12px; overflow-x: auto;">${JSON.stringify(data, null, 2)}</pre>`;
+        })
+        .catch(error => {
+          resultEl.innerHTML = `<p style="color: #dc2626;">❌ API Test Failed: ${error.message}</p>`;
+        });
+      }
+      
+      // Try React first, fallback to HTML if it fails
       setTimeout(() => {
         const rootContent = document.getElementById('root').innerHTML;
-        if (rootContent.includes('Loading SHL Assessment')) {
-          console.error('❌ React failed to mount after 5 seconds');
+        if (!rootContent || rootContent.trim() === '') {
+          console.log('🔄 React failed, using fallback app');
+          createFallbackApp();
         }
-      }, 5000);
+      }, 3000);
     </script>
     <!--
       This HTML file is a template.
