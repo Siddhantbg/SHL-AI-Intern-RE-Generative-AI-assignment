@@ -38,6 +38,9 @@ const TestApp = () => {
 
 try {
   console.log('🔍 [INDEX] Looking for root element...');
+  console.log('🌍 [INDEX] Environment:', process.env.NODE_ENV);
+  console.log('🔗 [INDEX] API URL:', process.env.REACT_APP_API_URL);
+  
   const container = document.getElementById('root');
   
   if (container) {
@@ -48,7 +51,11 @@ try {
     console.log('✅ [INDEX] Test app rendered!');
   } else {
     console.error('❌ [INDEX] Root element not found');
+    // Fallback: try to create content directly
+    document.body.innerHTML = '<div style="padding:20px;font-family:Arial;"><h1 style="color:red;">EMERGENCY FALLBACK - Root element missing!</h1></div>';
   }
 } catch (error) {
   console.error('💥 [INDEX] Error:', error);
+  // Emergency fallback
+  document.body.innerHTML = '<div style="padding:20px;font-family:Arial;"><h1 style="color:red;">EMERGENCY FALLBACK - JavaScript Error!</h1><p>' + error + '</p></div>';
 }

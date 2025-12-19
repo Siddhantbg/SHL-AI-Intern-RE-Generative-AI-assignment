@@ -15,6 +15,21 @@
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
+    <div id="root">
+      <!-- Temporary loading indicator -->
+      <div style="padding: 20px; font-family: Arial; text-align: center; background: #f0f0f0; min-height: 100vh;">
+        <h1 style="color: #666;">🔄 Loading React App...</h1>
+        <p>If this message persists, there may be a JavaScript loading issue.</p>
+        <script>
+          console.log('🏁 [HTML] Basic HTML loaded');
+          setTimeout(() => {
+            if (document.getElementById('root').innerHTML.includes('Loading React App')) {
+              console.error('❌ [HTML] React failed to load after 3 seconds');
+              document.getElementById('root').innerHTML = '<div style="padding:20px;color:red;font-family:Arial;text-align:center;"><h1>⚠️ React Loading Failed</h1><p>JavaScript bundle may not be loading properly.</p></div>';
+            }
+          }, 3000);
+        </script>
+      </div>
+    </div>
   </body>
 </html>
