@@ -1,1 +1,1 @@
-web: uvicorn src.api.main:app --host 0.0.0.0 --port $PORT --workers 1
+web: python -m uvicorn src.api.lightweight_main:app --host 0.0.0.0 --port $PORT --workers 1 --max-workers 1

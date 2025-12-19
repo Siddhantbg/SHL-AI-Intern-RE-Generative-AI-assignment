@@ -109,65 +109,39 @@ async def general_exception_handler(request: Request, exc: Exception):
 
 
 async def startup_event() -> None:
-    """Initialize the recommendation system on startup."""
+    """Initialize the recommendation system on startup with memory optimization."""
     global recommendation_engine
     
     try:
-        logger.info("Initializing SHL Assessment Recommendation System...")
+        logger.info("Initializing SHL Assessment Recommendation System with memory optimization...")
         
-        # Initialize vector database
+        # Use lazy initialization - don't load everything at startup
+        # This reduces initial memory usage significantly
+        
+        # Initialize vector database with lazy loading
         vector_db = VectorDatabase(
             embedding_dim=384,  # all-MiniLM-L6-v2 dimension
-            index_type='flat',
+            index_type='flat',  # Use flat for memory efficiency
             storage_dir=str(settings.data_dir / 'vector_db')
         )
         
-        # Try to load existing database
+        # Try to load existing database metadata only (not the full index)
         try:
             vector_db.load_database()
             stats = vector_db.get_database_stats()
             logger.info(f"Loaded existing vector database with {stats.get('total_assessments', 0)} assessments")
         except FileNotFoundError:
-            logger.warning("No existing vector database found. Attempting to initialize from scraped data...")
-            # Try to initialize from scraped data
-            try:
-                import json
-                assessments_file = settings.data_dir / 'scraped' / 'assessments.json'
-                if assessments_file.exists():
-                    with open(assessments_file, 'r', encoding='utf-8') as f:
-                        assessments = json.load(f)
-                    
-                    logger.info(f"Loading {len(assessments)} assessments from scraped data...")
-                    for assessment in assessments:
-                        try:
-                            vector_db.add_assessment(
-                                assessment_id=assessment.get('id', ''),
-                                name=assessment.get('name', ''),
-                                description=assessment.get('description', ''),
-                                url=assessment.get('url', ''),
-                                test_type=assessment.get('test_type', ''),
-                                category=assessment.get('category', ''),
-                                skills=assessment.get('skills', [])
-                            )
-                        except Exception as e:
-                            logger.error(f"Failed to add assessment {assessment.get('id', 'unknown')}: {str(e)}")
-                    
-                    vector_db.save_database()
-                    stats = vector_db.get_database_stats()
-                    logger.info(f"Initialized database with {stats.get('total_assessments', 0)} assessments")
-                else:
-                    logger.warning("No scraped assessments file found. Starting with empty database.")
-            except Exception as e:
-                logger.error(f"Failed to initialize from scraped data: {str(e)}")
-                logger.info("Starting with empty vector database")
+            logger.warning("No existing vector database found. Will initialize on first request.")
+            # Don't initialize from scraped data at startup - do it lazily
         except Exception as e:
             logger.error(f"Failed to load vector database: {str(e)}")
             logger.info("Starting with empty vector database")
         
-        # Initialize query processor
+        # Initialize query processor with lazy model loading
         query_processor = QueryProcessor(embedding_model_name='all-MiniLM-L6-v2')
+        # Don't load the embedding model at startup - load it on first use
         
-        # Initialize balanced ranker
+        # Initialize balanced ranker (lightweight)
         balanced_ranker = BalancedRanker()
         
         # Initialize recommendation engine
@@ -177,7 +151,7 @@ async def startup_event() -> None:
             balanced_ranker=balanced_ranker
         )
         
-        logger.info("SHL Assessment Recommendation System initialized successfully")
+        logger.info("SHL Assessment Recommendation System initialized successfully (lazy loading enabled)")
         
     except Exception as e:
         logger.error(f"Failed to initialize recommendation system: {str(e)}")

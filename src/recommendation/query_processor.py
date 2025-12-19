@@ -96,12 +96,23 @@ class QueryProcessor:
             self.gemini_model = None
     
     def _load_embedding_model(self) -> None:
-        """Load the sentence transformer model for embeddings."""
+        """Load the sentence transformer model for embeddings with memory optimization."""
         if not self.embedding_model:
             try:
                 logger.info(f"Loading embedding model: {self.embedding_model_name}")
-                self.embedding_model = SentenceTransformer(self.embedding_model_name)
-                logger.info("Embedding model loaded successfully")
+                # Use a smaller, more memory-efficient model
+                if self.embedding_model_name == 'all-MiniLM-L6-v2':
+                    # This model is already quite efficient, but we can optimize loading
+                    import torch
+                    # Set device to CPU to save GPU memory
+                    device = 'cpu'
+                    self.embedding_model = SentenceTransformer(self.embedding_model_name, device=device)
+                    # Enable memory optimization
+                    if hasattr(torch, 'set_num_threads'):
+                        torch.set_num_threads(1)  # Reduce CPU threads to save memory
+                else:
+                    self.embedding_model = SentenceTransformer(self.embedding_model_name)
+                logger.info("Embedding model loaded successfully with memory optimization")
             except Exception as e:
                 logger.error(f"Failed to load embedding model: {str(e)}")
                 raise
@@ -435,12 +446,19 @@ class QueryProcessor:
         return domains
     
     def _generate_query_embedding(self, text: str) -> np.ndarray:
-        """Generate embedding for the query text."""
+        """Generate embedding for the query text with memory optimization."""
         if not self.embedding_model:
             self._load_embedding_model()
         
         try:
-            embedding = self.embedding_model.encode([text], convert_to_numpy=True)
+            # Use batch_size=1 and show_progress_bar=False to reduce memory
+            embedding = self.embedding_model.encode(
+                [text], 
+                convert_to_numpy=True,
+                batch_size=1,
+                show_progress_bar=False,
+                normalize_embeddings=True  # Normalize to save computation later
+            )
             return embedding[0]
         except Exception as e:
             logger.error(f"Failed to generate query embedding: {str(e)}")

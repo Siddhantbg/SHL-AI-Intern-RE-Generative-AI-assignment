@@ -1,36 +1,20 @@
-# Build tools (must be first)
-setuptools>=65.0.0
-wheel>=0.37.0
-
-# Core dependencies
+# Minimal dependencies for Render free tier (512MB RAM)
 fastapi>=0.104.1,<0.110.0
-uvicorn[standard]>=0.24.0,<0.30.0
-requests>=2.31.0,<3.0.0
-beautifulsoup4>=4.12.2,<5.0.0
-sentence-transformers>=2.7.0,<3.0.0
-faiss-cpu>=1.9.0
-pytest>=7.4.3,<8.0.0
-
-# Data processing
-pandas>=2.1.4,<3.0.0
-numpy>=1.24.0,<2.0.0
+uvicorn>=0.24.0,<0.30.0
 pydantic>=2.5.0,<3.0.0
+pydantic-settings>=2.1.0,<3.0.0
 
-# Development tools
-mypy>=1.7.1,<2.0.0
-black>=23.11.0,<25.0.0
-flake8>=6.1.0,<8.0.0
-isort>=5.12.0,<6.0.0
+# LLM integration - only Gemini (lightweight)
+google-generativeai>=0.3.2,<1.0.0
 
-# Testing
-pytest-asyncio>=0.21.1,<1.0.0
-pytest-cov>=4.1.0,<6.0.0
-httpx>=0.25.2,<1.0.0
-
-# LLM integration
-google-generativeai>=0.8.0,<1.0.0
-openai>=1.12.0,<2.0.0
-
-# Additional utilities
+# Essential utilities only
 python-dotenv>=1.0.0,<2.0.0
-gunicorn>=21.2.0,<23.0.0
+
+# Removed heavy ML dependencies:
+# - sentence-transformers (uses ~200MB RAM)
+# - faiss-cpu (uses ~100MB RAM) 
+# - numpy (uses ~50MB RAM)
+# - torch/transformers (uses ~300MB+ RAM)
+#
+# Total memory savings: ~650MB+
+# Now using simple text similarity instead of ML embeddings

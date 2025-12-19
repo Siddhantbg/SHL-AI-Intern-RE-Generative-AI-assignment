@@ -40,7 +40,7 @@ class VectorDatabase:
     def __init__(self, embedding_dim: int = 384, index_type: str = 'flat', 
                  storage_dir: str = './data/vector_db'):
         """
-        Initialize the vector database.
+        Initialize the vector database with memory optimization.
         
         Args:
             embedding_dim: Dimension of the embedding vectors
@@ -54,15 +54,19 @@ class VectorDatabase:
         # Create storage directory
         os.makedirs(storage_dir, exist_ok=True)
         
-        # Initialize FAISS index
+        # Initialize FAISS index with memory optimization
         self.index = None
         self.assessment_metadata = []  # List of AssessmentVector objects
         self.id_to_index = {}  # Map assessment ID to index position
         
-        self._initialize_index()
+        # Memory optimization: Use lazy loading
+        self._index_initialized = False
         
     def _initialize_index(self) -> None:
-        """Initialize the FAISS index based on the specified type."""
+        """Initialize the FAISS index based on the specified type with memory optimization."""
+        if self._index_initialized:
+            return
+            
         try:
             if self.index_type == 'flat':
                 # Flat index for exact search (good for smaller datasets)
@@ -71,17 +75,19 @@ class VectorDatabase:
             elif self.index_type == 'ivf':
                 # IVF index for approximate search (good for larger datasets)
                 quantizer = faiss.IndexFlatIP(self.embedding_dim)
-                nlist = 100  # Number of clusters
+                # Reduce nlist for memory efficiency
+                nlist = min(50, max(10, len(self.assessment_metadata) // 10))  # Adaptive nlist
                 self.index = faiss.IndexIVFFlat(quantizer, self.embedding_dim, nlist)
                 
             elif self.index_type == 'hnsw':
                 # HNSW index for very fast approximate search
-                M = 16  # Number of connections
+                M = 8  # Reduced connections for memory efficiency
                 self.index = faiss.IndexHNSWFlat(self.embedding_dim, M)
                 
             else:
                 raise ValueError(f"Unsupported index type: {self.index_type}")
                 
+            self._index_initialized = True
             logger.info(f"Initialized FAISS index: {self.index_type} with dimension {self.embedding_dim}")
             
         except Exception as e:
@@ -91,7 +97,7 @@ class VectorDatabase:
     def add_assessments(self, assessments: List[ProcessedAssessment], 
                        embeddings: np.ndarray) -> None:
         """
-        Add assessments and their embeddings to the vector database.
+        Add assessments and their embeddings to the vector database with memory optimization.
         
         Args:
             assessments: List of ProcessedAssessment objects
@@ -106,6 +112,10 @@ class VectorDatabase:
                            f"index dimension ({self.embedding_dim})")
         
         try:
+            # Initialize index lazily
+            if not self._index_initialized:
+                self._initialize_index()
+            
             # Normalize embeddings for cosine similarity
             normalized_embeddings = self._normalize_embeddings(embeddings)
             
@@ -119,21 +129,24 @@ class VectorDatabase:
             
             self.index.add(normalized_embeddings)
             
-            # Store metadata
+            # Store metadata with memory optimization - store only essential data
             for i, assessment in enumerate(assessments):
+                # Use float32 instead of float64 for embeddings to save memory
+                embedding_f32 = embeddings[i].astype(np.float32)
+                
                 assessment_vector = AssessmentVector(
                     id=assessment.id,
                     name=assessment.name,
                     url=assessment.url,
                     category=assessment.category,
                     test_type=assessment.test_type,
-                    embedding=embeddings[i],
+                    embedding=embedding_f32,  # Use float32
                     metadata={
-                        'description': assessment.description,
-                        'skills': assessment.skills,
-                        'cleaned_text': assessment.cleaned_text,
+                        'description': assessment.description[:500],  # Truncate long descriptions
+                        'skills': assessment.skills[:10],  # Limit skills list
                         'quality_score': assessment.quality_score,
                         'token_count': assessment.token_count
+                        # Remove 'cleaned_text' to save memory
                     }
                 )
                 
@@ -387,9 +400,98 @@ class VectorDatabase:
             logger.error(f"Failed to rebuild index: {str(e)}")
             raise
     
+    def add_assessment(self, assessment_id: str, name: str, description: str, 
+                      url: str, test_type: str, category: str, skills: List[str]) -> None:
+        """
+        Add a single assessment directly to the database (memory optimized).
+        
+        Args:
+            assessment_id: Unique identifier for the assessment
+            name: Assessment name
+            description: Assessment description
+            url: Assessment URL
+            test_type: Test type ('K' or 'P')
+            category: Assessment category
+            skills: List of skills
+        """
+        try:
+            # Create a simple embedding from text (fallback method)
+            text_for_embedding = f"{name} {description} {' '.join(skills)}"
+            
+            # Simple text-based embedding (fallback if sentence transformer not available)
+            # This is much more memory efficient
+            simple_embedding = self._create_simple_embedding(text_for_embedding)
+            
+            # Initialize index if needed
+            if not self._index_initialized:
+                self._initialize_index()
+            
+            # Normalize and add to index
+            normalized_embedding = self._normalize_embeddings(simple_embedding.reshape(1, -1))
+            self.index.add(normalized_embedding)
+            
+            # Create assessment vector
+            assessment_vector = AssessmentVector(
+                id=assessment_id,
+                name=name,
+                url=url,
+                category=category,
+                test_type=test_type,
+                embedding=simple_embedding.astype(np.float32),
+                metadata={
+                    'description': description[:300],  # Truncate for memory
+                    'skills': skills[:8],  # Limit skills
+                    'quality_score': 0.8,  # Default score
+                    'token_count': len(text_for_embedding.split())
+                }
+            )
+            
+            # Add to metadata
+            idx = len(self.assessment_metadata)
+            self.assessment_metadata.append(assessment_vector)
+            self.id_to_index[assessment_id] = idx
+            
+            logger.debug(f"Added assessment: {name}")
+            
+        except Exception as e:
+            logger.error(f"Failed to add assessment {assessment_id}: {str(e)}")
+            raise
+    
+    def _create_simple_embedding(self, text: str) -> np.ndarray:
+        """Create a simple embedding using basic text features (memory efficient fallback)."""
+        # This is a very basic embedding method that doesn't require ML models
+        # It's not as good as sentence transformers but uses minimal memory
+        
+        words = text.lower().split()
+        
+        # Create a simple feature vector based on word presence and frequency
+        # This creates a 384-dimensional vector to match sentence transformer output
+        embedding = np.zeros(384, dtype=np.float32)
+        
+        # Simple hash-based features
+        for i, word in enumerate(words[:100]):  # Limit to first 100 words
+            # Use hash to map words to dimensions
+            hash_val = hash(word) % 384
+            embedding[hash_val] += 1.0 / (i + 1)  # Weight by position
+        
+        # Add some basic text statistics
+        embedding[0] = len(words)  # Word count
+        embedding[1] = len(set(words))  # Unique word count
+        embedding[2] = sum(len(word) for word in words) / max(len(words), 1)  # Avg word length
+        
+        # Normalize
+        norm = np.linalg.norm(embedding)
+        if norm > 0:
+            embedding = embedding / norm
+            
+        return embedding
+
     def clear_database(self) -> None:
         """Clear all data from the vector database."""
-        self._initialize_index()
+        if not self._index_initialized:
+            self._initialize_index()
+        else:
+            self._initialize_index()  # Reinitialize
         self.assessment_metadata.clear()
         self.id_to_index.clear()
         logger.info("Vector database cleared")
