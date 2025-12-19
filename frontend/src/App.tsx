@@ -1,10 +1,29 @@
 import React, { useState, useEffect } from 'react';
 
 // Components
+console.log('📦 [APP] Importing components...');
+try {
+  console.log('📦 [APP] Importing QueryInput...');
+  import('./components/QueryInput').then(() => console.log('✅ [APP] QueryInput imported'));
+  
+  console.log('📦 [APP] Importing RecommendationTable...');
+  import('./components/RecommendationTable').then(() => console.log('✅ [APP] RecommendationTable imported'));
+  
+  console.log('📦 [APP] Importing LoadingSpinner...');
+  import('./components/LoadingSpinner').then(() => console.log('✅ [APP] LoadingSpinner imported'));
+  
+  console.log('📦 [APP] Importing ErrorBoundary...');
+  import('./components/ErrorBoundary').then(() => console.log('✅ [APP] ErrorBoundary imported'));
+} catch (error) {
+  console.error('💥 [APP] Component import error:', error);
+}
+
 import QueryInput from './components/QueryInput';
 import RecommendationTable from './components/RecommendationTable';
 import LoadingSpinner from './components/LoadingSpinner';
 import ErrorBoundary from './components/ErrorBoundary';
+
+console.log('✅ [APP] All components imported successfully');
 
 interface Recommendation {
   assessment_name: string;
@@ -28,6 +47,8 @@ interface ApiResponse {
 }
 
 const App: React.FC = () => {
+  console.log('🎯 [APP] App component initializing...');
+  
   const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -35,15 +56,29 @@ const App: React.FC = () => {
   const [apiStatus, setApiStatus] = useState<'checking' | 'online' | 'offline' | 'error'>('checking');
 
   const apiUrl = process.env.REACT_APP_API_URL || 'https://shl-assessment-recommender.onrender.com';
+  
+  console.log('🔗 [APP] API URL configured:', apiUrl);
+  console.log('🔍 [APP] Environment variables:', {
+    NODE_ENV: process.env.NODE_ENV,
+    REACT_APP_API_URL: process.env.REACT_APP_API_URL
+  });
 
   useEffect(() => {
+    console.log('🔄 [APP] useEffect triggered - testing API connection...');
+    
     // Test API connection on component mount
     const testApiConnection = async () => {
       try {
+        console.log('🌐 [APP] Fetching health endpoint:', `${apiUrl}/health`);
         const response = await fetch(`${apiUrl}/health`);
-        setApiStatus(response.ok ? 'online' : 'error');
+        console.log('📡 [APP] Health check response:', response.status, response.statusText);
+        
+        const status = response.ok ? 'online' : 'error';
+        console.log('✅ [APP] API status determined:', status);
+        setApiStatus(status);
       } catch (error) {
-        console.error('API connection test failed:', error);
+        console.error('❌ [APP] API connection test failed:', error);
+        console.error('📋 [APP] Error details:', error.message);
         setApiStatus('offline');
       }
     };
@@ -88,6 +123,15 @@ const App: React.FC = () => {
       setIsLoading(false);
     }
   };
+
+  console.log('🎨 [APP] Rendering App component...');
+  console.log('📊 [APP] Current state:', {
+    apiStatus,
+    isLoading,
+    error,
+    currentQuery,
+    recommendationsCount: recommendations.length
+  });
 
   return (
     <ErrorBoundary>
