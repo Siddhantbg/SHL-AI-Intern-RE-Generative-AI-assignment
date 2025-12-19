@@ -75,13 +75,16 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# CORS setup
+# CORS setup with explicit configuration
+frontend_url = os.getenv('FRONTEND_URL', 'https://shl-ai-intern-re-generative-ai-assi.vercel.app')
+logger.info(f"Frontend URL from env: {frontend_url}")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],  # Allow all origins
     allow_credentials=True,
-    allow_methods=["GET", "POST"],
-    allow_headers=["*"],
+    allow_methods=["*"],  # Allow all methods
+    allow_headers=["*"],  # Allow all headers
 )
 
 @app.exception_handler(RequestValidationError)
@@ -234,18 +237,36 @@ async def get_llm_recommendations(query: str) -> List[Dict[str, Any]]:
         logger.error(f"LLM recommendation failed: {e}")
         return []
 
+@app.options("/{path:path}")
+async def options_handler(request: Request):
+    """Handle preflight OPTIONS requests."""
+    response = JSONResponse(content={"message": "OK"})
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
+    response.headers["Access-Control-Allow-Headers"] = "*"
+    response.headers["Access-Control-Max-Age"] = "86400"
+    return response
+
 @app.get("/health", response_model=HealthResponse)
 async def health_check():
     """Health check endpoint."""
     uptime = time.time() - startup_time
     
-    return HealthResponse(
+    response_data = HealthResponse(
         status="healthy",
         version="1.0.0-lite", 
         uptime=uptime,
         assessment_count=len(simple_assessments_db),
         environment=os.getenv("ENVIRONMENT", "production")
     )
+    
+    # Create JSONResponse with explicit CORS headers
+    json_response = JSONResponse(content=response_data.dict())
+    json_response.headers["Access-Control-Allow-Origin"] = "*"
+    json_response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+    json_response.headers["Access-Control-Allow-Headers"] = "*"
+    
+    return json_response
 
 @app.post("/recommend", response_model=RecommendationResponse)
 async def get_recommendations(request: RecommendationRequest):
