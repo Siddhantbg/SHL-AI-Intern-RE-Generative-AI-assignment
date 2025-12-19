@@ -111,13 +111,13 @@ const App: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#F3F6FA' }}>
-      {/* Enterprise Navbar */}
-      <nav className="bg-white" style={{ borderBottom: '1px solid #E2E8F0' }}>
+    <div className="min-h-screen" style={{ backgroundColor: '#F6F8FC' }}>
+      {/* Modern SaaS Navbar */}
+      <nav className="bg-white" style={{ borderBottom: '1px solid #E6EAF2' }}>
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <h1 className="text-xl font-semibold" style={{ color: '#0B2A4A' }}>
+              <h1 className="text-xl font-semibold" style={{ color: '#0A0F1F' }}>
                 SHL Assessment Recommender
               </h1>
             </div>
@@ -125,12 +125,12 @@ const App: React.FC = () => {
               <a 
                 href="#" 
                 className="text-sm font-medium" 
-                style={{ color: '#475569' }}
+                style={{ color: '#5B6478' }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.color = '#2563EB';
+                  e.currentTarget.style.color = '#4F7CFF';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.color = '#475569';
+                  e.currentTarget.style.color = '#5B6478';
                 }}
               >
                 Home
@@ -138,12 +138,12 @@ const App: React.FC = () => {
               <a 
                 href="#" 
                 className="text-sm font-medium" 
-                style={{ color: '#475569' }}
+                style={{ color: '#5B6478' }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.color = '#2563EB';
+                  e.currentTarget.style.color = '#4F7CFF';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.color = '#475569';
+                  e.currentTarget.style.color = '#5B6478';
                 }}
               >
                 Assessments
@@ -151,12 +151,12 @@ const App: React.FC = () => {
               <a 
                 href="#" 
                 className="text-sm font-medium" 
-                style={{ color: '#475569' }}
+                style={{ color: '#5B6478' }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.color = '#2563EB';
+                  e.currentTarget.style.color = '#4F7CFF';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.color = '#475569';
+                  e.currentTarget.style.color = '#5B6478';
                 }}
               >
                 About
@@ -170,32 +170,32 @@ const App: React.FC = () => {
         <div className="max-w-6xl mx-auto">
           {/* Header */}
           <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold mb-4" style={{ color: '#0F172A' }}>
+            <h1 className="text-4xl font-bold mb-4" style={{ color: '#0A0F1F' }}>
               Assessment Recommendations
             </h1>
-            <p className="text-xl mb-6" style={{ color: '#475569' }}>
+            <p className="text-xl mb-6" style={{ color: '#5B6478' }}>
               Find the right assessments for your hiring requirements
             </p>
             
             {/* System Status */}
-            <div className="bg-white rounded-lg shadow-sm p-6 mb-6 max-w-2xl mx-auto">
-              <h2 className="text-lg font-semibold mb-4" style={{ color: '#0B2A4A' }}>System Status</h2>
+            <div className="bg-white rounded-xl p-6 mb-6 max-w-2xl mx-auto" style={{ boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)' }}>
+              <h2 className="text-lg font-semibold mb-4" style={{ color: '#0A0F1F' }}>System Status</h2>
               <div className="space-y-3 text-sm">
                 <div className="flex items-center justify-center space-x-2">
-                  <div className="w-2 h-2 rounded-full" style={{ backgroundColor: '#15803D' }}></div>
-                  <span style={{ color: '#0F172A' }}>Frontend: Application loaded</span>
+                  <div className="w-2 h-2 rounded-full" style={{ backgroundColor: '#1DBF73' }}></div>
+                  <span style={{ color: '#0B1220' }}>Frontend: Application loaded</span>
                 </div>
                 <div className="flex items-center justify-center space-x-2">
                   <div 
                     className="w-2 h-2 rounded-full" 
-                    style={{ backgroundColor: apiStatus === 'online' ? '#15803D' : '#DC2626' }}
+                    style={{ backgroundColor: apiStatus === 'online' ? '#1DBF73' : '#DC2626' }}
                   ></div>
-                  <span style={{ color: '#0F172A' }}>
+                  <span style={{ color: '#0B1220' }}>
                     Backend: {apiStatus === 'online' ? 'Connected' : 'Disconnected'}
                   </span>
                 </div>
                 {healthData && (
-                  <div style={{ color: '#64748B' }} className="text-xs">
+                  <div style={{ color: '#8A94A6' }} className="text-xs">
                     Version {healthData.version} | {healthData.assessment_count} assessments | 
                     Uptime {Math.round(healthData.uptime)}s
                   </div>
@@ -208,14 +208,14 @@ const App: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Query Input Section */}
             <div className="lg:col-span-1">
-              <div className="bg-white rounded-lg shadow-sm p-6">
-                <h2 className="text-xl font-semibold mb-4" style={{ color: '#0B2A4A' }}>
+              <div className="bg-white rounded-xl p-6" style={{ boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)' }}>
+                <h2 className="text-xl font-semibold mb-4" style={{ color: '#0A0F1F' }}>
                   Job Description
                 </h2>
                 
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
-                    <label htmlFor="query" className="block text-sm font-medium mb-2" style={{ color: '#0F172A' }}>
+                    <label htmlFor="query" className="block text-sm font-medium mb-2" style={{ color: '#0B1220' }}>
                       Enter job requirements
                     </label>
                     <textarea
@@ -225,22 +225,22 @@ const App: React.FC = () => {
                       placeholder="Describe the role, required skills, and qualifications..."
                       className="w-full h-32 px-3 py-2 rounded-lg resize-none"
                       style={{ 
-                        border: '1px solid #CBD5E1',
-                        color: '#0F172A'
+                        border: '1px solid #E6EAF2',
+                        color: '#0B1220'
                       }}
                       onFocus={(e) => {
-                        e.target.style.borderColor = '#2563EB';
+                        e.target.style.borderColor = '#4F7CFF';
                         e.target.style.outline = 'none';
                       }}
                       onBlur={(e) => {
-                        e.target.style.borderColor = '#CBD5E1';
+                        e.target.style.borderColor = '#E6EAF2';
                       }}
                       disabled={loading || apiStatus !== 'online'}
                     />
                   </div>
 
                   <div>
-                    <label htmlFor="maxResults" className="block text-sm font-medium mb-2" style={{ color: '#0F172A' }}>
+                    <label htmlFor="maxResults" className="block text-sm font-medium mb-2" style={{ color: '#0B1220' }}>
                       Maximum results: {maxResults}
                     </label>
                     <input
@@ -252,7 +252,7 @@ const App: React.FC = () => {
                       onChange={(e) => setMaxResults(parseInt(e.target.value))}
                       className="w-full h-2 rounded-lg appearance-none cursor-pointer"
                       style={{
-                        background: `linear-gradient(to right, #2563EB 0%, #2563EB ${(maxResults - 1) * 11.11}%, #E5E7EB ${(maxResults - 1) * 11.11}%, #E5E7EB 100%)`
+                        background: `linear-gradient(to right, #4F7CFF 0%, #4F7CFF ${(maxResults - 1) * 11.11}%, #E6EAF2 ${(maxResults - 1) * 11.11}%, #E6EAF2 100%)`
                       }}
                       disabled={loading}
                     />
@@ -263,18 +263,18 @@ const App: React.FC = () => {
                     disabled={loading || apiStatus !== 'online' || !query.trim()}
                     className="w-full text-white py-3 px-4 font-medium"
                     style={{
-                      backgroundColor: loading || apiStatus !== 'online' || !query.trim() ? '#CBD5E1' : '#2563EB',
-                      borderRadius: '10px',
-                      color: loading || apiStatus !== 'online' || !query.trim() ? '#64748B' : '#FFFFFF'
+                      backgroundColor: loading || apiStatus !== 'online' || !query.trim() ? '#8A94A6' : '#4F7CFF',
+                      borderRadius: '12px',
+                      color: loading || apiStatus !== 'online' || !query.trim() ? '#FFFFFF' : '#FFFFFF'
                     }}
                     onMouseEnter={(e) => {
                       if (!loading && apiStatus === 'online' && query.trim()) {
-                        e.currentTarget.style.backgroundColor = '#1D4ED8';
+                        e.currentTarget.style.backgroundColor = '#3B5EE6';
                       }
                     }}
                     onMouseLeave={(e) => {
                       if (!loading && apiStatus === 'online' && query.trim()) {
-                        e.currentTarget.style.backgroundColor = '#2563EB';
+                        e.currentTarget.style.backgroundColor = '#4F7CFF';
                       }
                     }}
                   >
@@ -284,7 +284,7 @@ const App: React.FC = () => {
 
                 {/* Example Queries */}
                 <div className="mt-6">
-                  <h3 className="text-sm font-medium mb-3" style={{ color: '#64748B' }}>Sample job descriptions:</h3>
+                  <h3 className="text-sm font-medium mb-3" style={{ color: '#8A94A6' }}>Sample job descriptions:</h3>
                   <div className="space-y-2">
                     {exampleQueries.map((example, index) => (
                       <button
@@ -292,17 +292,17 @@ const App: React.FC = () => {
                         onClick={() => setQuery(example)}
                         className="w-full text-left text-sm p-3 rounded-lg"
                         style={{
-                          color: '#2563EB',
-                          border: '1px solid #E2E8F0',
+                          color: '#4F7CFF',
+                          border: '1px solid #E6EAF2',
                           backgroundColor: '#FFFFFF'
                         }}
                         onMouseEnter={(e) => {
-                          e.currentTarget.style.backgroundColor = '#F8FAFC';
-                          e.currentTarget.style.borderColor = '#2563EB';
+                          e.currentTarget.style.backgroundColor = '#F6F8FC';
+                          e.currentTarget.style.borderColor = '#4F7CFF';
                         }}
                         onMouseLeave={(e) => {
                           e.currentTarget.style.backgroundColor = '#FFFFFF';
-                          e.currentTarget.style.borderColor = '#E2E8F0';
+                          e.currentTarget.style.borderColor = '#E6EAF2';
                         }}
                         disabled={loading}
                       >
@@ -316,8 +316,8 @@ const App: React.FC = () => {
 
             {/* Results Section */}
             <div className="lg:col-span-2">
-              <div className="bg-white rounded-lg shadow-sm p-6">
-                <h2 className="text-xl font-semibold mb-4" style={{ color: '#0B2A4A' }}>
+              <div className="bg-white rounded-xl p-6" style={{ boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)' }}>
+                <h2 className="text-xl font-semibold mb-4" style={{ color: '#0A0F1F' }}>
                   Assessment Recommendations
                 </h2>
 
@@ -337,31 +337,31 @@ const App: React.FC = () => {
 
                 {loading && (
                   <div className="text-center py-12">
-                    <div className="inline-block animate-spin rounded-full h-8 w-8 border-2 border-gray-200" style={{ borderTopColor: '#2563EB' }}></div>
-                    <p className="mt-3" style={{ color: '#475569' }}>Processing request...</p>
+                    <div className="inline-block animate-spin rounded-full h-8 w-8 border-2 border-gray-200" style={{ borderTopColor: '#4F7CFF' }}></div>
+                    <p className="mt-3" style={{ color: '#5B6478' }}>Processing request...</p>
                   </div>
                 )}
 
                 {recommendations.length > 0 && !loading && (
                   <div className="space-y-4">
-                    <div className="text-sm mb-4" style={{ color: '#475569' }}>
+                    <div className="text-sm mb-4" style={{ color: '#5B6478' }}>
                       {recommendations.length} assessment{recommendations.length !== 1 ? 's' : ''} recommended
                     </div>
                     
                     <div className="overflow-x-auto">
                       <table className="min-w-full" style={{ borderCollapse: 'separate', borderSpacing: 0 }}>
                         <thead>
-                          <tr style={{ backgroundColor: '#F8FAFC' }}>
-                            <th className="px-6 py-4 text-left text-xs font-medium uppercase tracking-wider" style={{ color: '#475569', borderBottom: '1px solid #E2E8F0' }}>
+                          <tr style={{ backgroundColor: '#F6F8FC' }}>
+                            <th className="px-6 py-4 text-left text-xs font-medium uppercase tracking-wider" style={{ color: '#5B6478', borderBottom: '1px solid #E6EAF2' }}>
                               Assessment
                             </th>
-                            <th className="px-6 py-4 text-left text-xs font-medium uppercase tracking-wider" style={{ color: '#475569', borderBottom: '1px solid #E2E8F0' }}>
+                            <th className="px-6 py-4 text-left text-xs font-medium uppercase tracking-wider" style={{ color: '#5B6478', borderBottom: '1px solid #E6EAF2' }}>
                               Type
                             </th>
-                            <th className="px-6 py-4 text-left text-xs font-medium uppercase tracking-wider" style={{ color: '#475569', borderBottom: '1px solid #E2E8F0' }}>
+                            <th className="px-6 py-4 text-left text-xs font-medium uppercase tracking-wider" style={{ color: '#5B6478', borderBottom: '1px solid #E6EAF2' }}>
                               Match
                             </th>
-                            <th className="px-6 py-4 text-left text-xs font-medium uppercase tracking-wider" style={{ color: '#475569', borderBottom: '1px solid #E2E8F0' }}>
+                            <th className="px-6 py-4 text-left text-xs font-medium uppercase tracking-wider" style={{ color: '#5B6478', borderBottom: '1px solid #E6EAF2' }}>
                               Skills
                             </th>
                           </tr>
@@ -370,9 +370,9 @@ const App: React.FC = () => {
                           {recommendations.map((rec, index) => (
                             <tr 
                               key={index}
-                              style={{ borderBottom: index < recommendations.length - 1 ? '1px solid #F1F5F9' : 'none' }}
+                              style={{ borderBottom: index < recommendations.length - 1 ? '1px solid #F6F8FC' : 'none' }}
                               onMouseEnter={(e) => {
-                                e.currentTarget.style.backgroundColor = '#F8FAFC';
+                                e.currentTarget.style.backgroundColor = '#F6F8FC';
                               }}
                               onMouseLeave={(e) => {
                                 e.currentTarget.style.backgroundColor = '#FFFFFF';
@@ -385,43 +385,43 @@ const App: React.FC = () => {
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="font-medium"
-                                    style={{ color: '#2563EB' }}
+                                    style={{ color: '#4F7CFF' }}
                                     onMouseEnter={(e) => {
-                                      e.currentTarget.style.color = '#1D4ED8';
+                                      e.currentTarget.style.color = '#3B5EE6';
                                     }}
                                     onMouseLeave={(e) => {
-                                      e.currentTarget.style.color = '#2563EB';
+                                      e.currentTarget.style.color = '#4F7CFF';
                                     }}
                                   >
                                     {rec.assessment_name}
                                   </a>
-                                  <p className="text-xs mt-1" style={{ color: '#64748B' }}>{rec.explanation}</p>
+                                  <p className="text-xs mt-1" style={{ color: '#8A94A6' }}>{rec.explanation}</p>
                                 </div>
                               </td>
                               <td className="px-6 py-4">
                                 <span 
                                   className="inline-flex px-3 py-1 text-xs font-medium rounded-full"
                                   style={{
-                                    backgroundColor: rec.test_type === 'K' ? '#EBF4FF' : '#DCFCE7',
-                                    color: rec.test_type === 'K' ? '#0B2A4A' : '#15803D'
+                                    backgroundColor: rec.test_type === 'K' ? '#EBF4FF' : '#E8F9F1',
+                                    color: rec.test_type === 'K' ? '#0A0F1F' : '#1DBF73'
                                   }}
                                 >
                                   {rec.test_type === 'K' ? 'Knowledge' : 'Personality'}
                                 </span>
-                                <div className="text-xs mt-1" style={{ color: '#64748B' }}>{rec.category}</div>
+                                <div className="text-xs mt-1" style={{ color: '#8A94A6' }}>{rec.category}</div>
                               </td>
                               <td className="px-6 py-4">
                                 <div className="flex items-center">
-                                  <div className="w-20 rounded-full h-2 mr-3" style={{ backgroundColor: '#E5E7EB' }}>
+                                  <div className="w-20 rounded-full h-2 mr-3" style={{ backgroundColor: '#E6EAF2' }}>
                                     <div 
                                       className="h-2 rounded-full" 
                                       style={{ 
                                         width: `${rec.relevance_score * 100}%`,
-                                        backgroundColor: '#2563EB'
+                                        backgroundColor: '#4F7CFF'
                                       }}
                                     ></div>
                                   </div>
-                                  <span className="text-sm font-medium" style={{ color: '#0F172A' }}>
+                                  <span className="text-sm font-medium" style={{ color: '#0B1220' }}>
                                     {Math.round(rec.relevance_score * 100)}%
                                   </span>
                                 </div>
@@ -433,15 +433,15 @@ const App: React.FC = () => {
                                       key={skillIndex}
                                       className="inline-flex px-2 py-1 text-xs rounded"
                                       style={{
-                                        backgroundColor: '#F1F5F9',
-                                        color: '#475569'
+                                        backgroundColor: '#F6F8FC',
+                                        color: '#5B6478'
                                       }}
                                     >
                                       {skill}
                                     </span>
                                   ))}
                                   {rec.skills_matched.length > 3 && (
-                                    <span className="text-xs" style={{ color: '#64748B' }}>
+                                    <span className="text-xs" style={{ color: '#8A94A6' }}>
                                       +{rec.skills_matched.length - 3} more
                                     </span>
                                   )}
@@ -456,14 +456,14 @@ const App: React.FC = () => {
                 )}
 
                 {!loading && !error && recommendations.length === 0 && query && (
-                  <div className="text-center py-12" style={{ color: '#64748B' }}>
+                  <div className="text-center py-12" style={{ color: '#8A94A6' }}>
                     <p className="text-lg">No matching assessments found</p>
                     <p className="text-sm mt-2">Try adjusting your job description or requirements</p>
                   </div>
                 )}
 
                 {!loading && !error && recommendations.length === 0 && !query && (
-                  <div className="text-center py-12" style={{ color: '#64748B' }}>
+                  <div className="text-center py-12" style={{ color: '#8A94A6' }}>
                     <p className="text-lg">Ready to find assessments</p>
                     <p className="text-sm mt-2">Enter a job description to get personalized recommendations</p>
                   </div>
