@@ -68,8 +68,8 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="SHL Assessment Recommendation System (Lite)",
-    description="Memory-optimized recommendation system for SHL assessments",
-    version="1.0.0-lite",
+    description="Memory-optimized recommendation system for SHL assessments - Updated for CORS fix",
+    version="1.0.1-cors-fix",
     docs_url="/docs",
     redoc_url="/redoc",
     lifespan=lifespan,
@@ -86,6 +86,20 @@ app.add_middleware(
     allow_methods=["*"],  # Allow all methods
     allow_headers=["*"],  # Allow all headers
 )
+
+# Add request logging middleware
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    """Log all requests for debugging."""
+    logger.info(f"Request: {request.method} {request.url}")
+    logger.info(f"Headers: {dict(request.headers)}")
+    
+    response = await call_next(request)
+    
+    logger.info(f"Response status: {response.status_code}")
+    logger.info(f"Response headers: {dict(response.headers)}")
+    
+    return response
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
@@ -355,6 +369,46 @@ async def get_stats():
         "memory_optimized": True,
         "environment": os.getenv("ENVIRONMENT", "production")
     }
+
+@app.get("/test-cors")
+async def test_cors():
+    """Test CORS with manual headers - bypasses middleware."""
+    from fastapi import Response
+    
+    content = {
+        "message": "CORS test successful!",
+        "timestamp": time.time(),
+        "frontend_url": os.getenv('FRONTEND_URL', 'not-set'),
+        "cors_working": True
+    }
+    
+    response = JSONResponse(content=content)
+    
+    # Manually set CORS headers
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization, X-Requested-With"
+    response.headers["Access-Control-Allow-Credentials"] = "true"
+    
+    return response
+
+@app.get("/simple-health")
+async def simple_health():
+    """Simple health check without response model."""
+    response = JSONResponse(content={
+        "status": "healthy",
+        "message": "API is working",
+        "timestamp": time.time(),
+        "cors_test": "should work"
+    })
+    
+    # Force CORS headers
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+    response.headers["Access-Control-Allow-Headers"] = "*"
+    response.headers["Access-Control-Allow-Credentials"] = "true"
+    
+    return response
 
 if __name__ == "__main__":
     import uvicorn
