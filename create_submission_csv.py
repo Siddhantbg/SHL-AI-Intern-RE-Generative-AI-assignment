@@ -1,0 +1,80 @@
+#!/usr/bin/env python3
+"""
+Script to create final submission CSV with proper naming format.
+"""
+
+import csv
+import sys
+from pathlib import Path
+
+def create_submission_csv(firstname, lastname):
+    """Create submission CSV with firstname_lastname.csv format."""
+    
+    # The test predictions data from your system
+    predictions_data = [
+        ("I am hiring for Java developers who can also collaborate effectively with my business teams. Looking for an assessment(s) that can be completed in 40 minutes.", "https://www.shl.com/solutions/products/product-catalog/view/automata-fix-new/"),
+        ("I am hiring for Java developers who can also collaborate effectively with my business teams. Looking for an assessment(s) that can be completed in 40 minutes.", "https://www.shl.com/solutions/products/product-catalog/view/core-java-entry-level-new/"),
+        ("I am hiring for Java developers who can also collaborate effectively with my business teams. Looking for an assessment(s) that can be completed in 40 minutes.", "https://www.shl.com/solutions/products/product-catalog/view/java-8-new/"),
+        ("I am hiring for Java developers who can also collaborate effectively with my business teams. Looking for an assessment(s) that can be completed in 40 minutes.", "https://www.shl.com/solutions/products/product-catalog/view/core-java-advanced-level-new/"),
+        ("I am hiring for Java developers who can also collaborate effectively with my business teams. Looking for an assessment(s) that can be completed in 40 minutes.", "https://www.shl.com/products/product-catalog/view/interpersonal-communications/"),
+        ("I want to hire new graduates for a sales role in my company, the budget is for about an hour for each test. Give me some options", "https://www.shl.com/solutions/products/product-catalog/view/entry-level-sales-7-1/"),
+        ("I want to hire new graduates for a sales role in my company, the budget is for about an hour for each test. Give me some options", "https://www.shl.com/solutions/products/product-catalog/view/entry-level-sales-sift-out-7-1/"),
+        ("I want to hire new graduates for a sales role in my company, the budget is for about an hour for each test. Give me some options", "https://www.shl.com/solutions/products/product-catalog/view/entry-level-sales-solution/"),
+        ("I want to hire new graduates for a sales role in my company, the budget is for about an hour for each test. Give me some options", "https://www.shl.com/solutions/products/product-catalog/view/sales-representative-solution/"),
+        ("I want to hire new graduates for a sales role in my company, the budget is for about an hour for each test. Give me some options", "https://www.shl.com/products/product-catalog/view/business-communication-adaptive/"),
+        ("I want to hire new graduates for a sales role in my company, the budget is for about an hour for each test. Give me some options", "https://www.shl.com/solutions/products/product-catalog/view/technical-sales-associate-solution/"),
+        ("I want to hire new graduates for a sales role in my company, the budget is for about an hour for each test. Give me some options", "https://www.shl.com/solutions/products/product-catalog/view/svar-spoken-english-indian-accent-new/"),
+        ("I want to hire new graduates for a sales role in my company, the budget is for about an hour for each test. Give me some options", "https://www.shl.com/products/product-catalog/view/interpersonal-communications/"),
+        ("I want to hire new graduates for a sales role in my company, the budget is for about an hour for each test. Give me some options", "https://www.shl.com/solutions/products/product-catalog/view/english-comprehension-new/"),
+        ("I am looking for a COO for my company in China and I want to see if they are culturally a right fit for our company. Suggest me an assessment that they can complete in about an hour", "https://www.shl.com/products/product-catalog/view/enterprise-leadership-report/"),
+        ("I am looking for a COO for my company in China and I want to see if they are culturally a right fit for our company. Suggest me an assessment that they can complete in about an hour", "https://www.shl.com/products/product-catalog/view/occupational-personality-questionnaire-opq32r/"),
+        ("I am looking for a COO for my company in China and I want to see if they are culturally a right fit for our company. Suggest me an assessment that they can complete in about an hour", "https://www.shl.com/solutions/products/product-catalog/view/opq-leadership-report/"),
+        ("I am looking for a COO for my company in China and I want to see if they are culturally a right fit for our company. Suggest me an assessment that they can complete in about an hour", "https://www.shl.com/solutions/products/product-catalog/view/opq-team-types-and-leadership-styles-report"),
+        ("I am looking for a COO for my company in China and I want to see if they are culturally a right fit for our company. Suggest me an assessment that they can complete in about an hour", "https://www.shl.com/products/product-catalog/view/enterprise-leadership-report-2-0/"),
+        ("I am looking for a COO for my company in China and I want to see if they are culturally a right fit for our company. Suggest me an assessment that they can complete in about an hour", "https://www.shl.com/solutions/products/product-catalog/view/global-skills-assessment/"),
+        ("KEY RESPONSIBITILES:Manage the sound-scape of the station through appropriate creative and marketing interventions to Increase or Maintain the listenershipActs as an interface between Programming & sales team, thereby supporting the sales team by providing creative inputs in order to increase the overall ad spends by clientsBuild brand Mirchi by ideating fresh programming initiatives on air campaigns, programming led on-ground events & new properties to ensure brand differentiation & thus increase brand recall at station levelInvest time in local RJs to grow & develop them as local celebritiesThrough strong networking, must focus on identifying the best of local talent and ensure to bring the creative minds from the market on board with MirchiBuild radio as a category for both listeners & advertisersPeople ManagementIdentifying the right talent and investing time in developing them by frequent feedback on their performanceMonitor, Coach and mentor team members on a regular basisDevelopment of Jocks as per guidelinesMust have an eye to spot the local talent to fill up vacancies locallyTECHNICAL SKILLS & QUALIFICATION REQUIRED:Graduation / Post Graduation (Any specialisation) with 8 -12 years of relevant experienceExperience in digital content conceptualisationStrong branding focusMust be well-read in variety of areas and must keep up with the latest events in the city / cluster / countryMust know to read, write & speak English PERSONAL ATTRIBUTES:Excellent communication skillsGood interpersonal skillsPeople managementSuggest me some tests for the above jd. The duration should be at most 90 mins", "https://www.shl.com/solutions/products/product-catalog/view/verify-verbal-ability-next-generation/"),
+        ("KEY RESPONSIBITILES:Manage the sound-scape of the station through appropriate creative and marketing interventions to Increase or Maintain the listenershipActs as an interface between Programming & sales team, thereby supporting the sales team by providing creative inputs in order to increase the overall ad spends by clientsBuild brand Mirchi by ideating fresh programming initiatives on air campaigns, programming led on-ground events & new properties to ensure brand differentiation & thus increase brand recall at station levelInvest time in local RJs to grow & develop them as local celebritiesThrough strong networking, must focus on identifying the best of local talent and ensure to bring the creative minds from the market on board with MirchiBuild radio as a category for both listeners & advertisersPeople ManagementIdentifying the right talent and investing time in developing them by frequent feedback on their performanceMonitor, Coach and mentor team members on a regular basisDevelopment of Jocks as per guidelinesMust have an eye to spot the local talent to fill up vacancies locallyTECHNICAL SKILLS & QUALIFICATION REQUIRED:Graduation / Post Graduation (Any specialisation) with 8 -12 years of relevant experienceExperience in digital content conceptualisationStrong branding focusMust be well-read in variety of areas and must keep up with the latest events in the city / cluster / countryMust know to read, write & speak English PERSONAL ATTRIBUTES:Excellent communication skillsGood interpersonal skillsPeople managementSuggest me some tests for the above jd. The duration should be at most 90 mins", "https://www.shl.com/solutions/products/product-catalog/view/shl-verify-interactive-inductive-reasoning/"),
+        ("KEY RESPONSIBITILES:Manage the sound-scape of the station through appropriate creative and marketing interventions to Increase or Maintain the listenershipActs as an interface between Programming & sales team, thereby supporting the sales team by providing creative inputs in order to increase the overall ad spends by clientsBuild brand Mirchi by ideating fresh programming initiatives on air campaigns, programming led on-ground events & new properties to ensure brand differentiation & thus increase brand recall at station levelInvest time in local RJs to grow & develop them as local celebritiesThrough strong networking, must focus on identifying the best of local talent and ensure to bring the creative minds from the market on board with MirchiBuild radio as a category for both listeners & advertisersPeople ManagementIdentifying the right talent and investing time in developing them by frequent feedback on their performanceMonitor, Coach and mentor team members on a regular basisDevelopment of Jocks as per guidelinesMust have an eye to spot the local talent to fill up vacancies locallyTECHNICAL SKILLS & QUALIFICATION REQUIRED:Graduation / Post Graduation (Any specialisation) with 8 -12 years of relevant experienceExperience in digital content conceptualisationStrong branding focusMust be well-read in variety of areas and must keep up with the latest events in the city / cluster / countryMust know to read, write & speak English PERSONAL ATTRIBUTES:Excellent communication skillsGood interpersonal skillsPeople managementSuggest me some tests for the above jd. The duration should be at most 90 mins", "https://www.shl.com/solutions/products/product-catalog/view/marketing-new/"),
+        ("KEY RESPONSIBITILES:Manage the sound-scape of the station through appropriate creative and marketing interventions to Increase or Maintain the listenershipActs as an interface between Programming & sales team, thereby supporting the sales team by providing creative inputs in order to increase the overall ad spends by clientsBuild brand Mirchi by ideating fresh programming initiatives on air campaigns, programming led on-ground events & new properties to ensure brand differentiation & thus increase brand recall at station levelInvest time in local RJs to grow & develop them as local celebritiesThrough strong networking, must focus on identifying the best of local talent and ensure to bring the creative minds from the market on board with MirchiBuild radio as a category for both listeners & advertisersPeople ManagementIdentifying the right talent and investing time in developing them by frequent feedback on their performanceMonitor, Coach and mentor team members on a regular basisDevelopment of Jocks as per guidelinesMust have an eye to spot the local talent to fill up vacancies locallyTECHNICAL SKILLS & QUALIFICATION REQUIRED:Graduation / Post Graduation (Any specialisation) with 8 -12 years of relevant experienceExperience in digital content conceptualisationStrong branding focusMust be well-read in variety of areas and must keep up with the latest events in the city / cluster / countryMust know to read, write & speak English PERSONAL ATTRIBUTES:Excellent communication skillsGood interpersonal skillsPeople managementSuggest me some tests for the above jd. The duration should be at most 90 mins", "https://www.shl.com/solutions/products/product-catalog/view/english-comprehension-new/"),
+        ("KEY RESPONSIBITILES:Manage the sound-scape of the station through appropriate creative and marketing interventions to Increase or Maintain the listenershipActs as an interface between Programming & sales team, thereby supporting the sales team by providing creative inputs in order to increase the overall ad spends by clientsBuild brand Mirchi by ideating fresh programming initiatives on air campaigns, programming led on-ground events & new properties to ensure brand differentiation & thus increase brand recall at station levelInvest time in local RJs to grow & develop them as local celebritiesThrough strong networking, must focus on identifying the best of local talent and ensure to bring the creative minds from the market on board with MirchiBuild radio as a category for both listeners & advertisersPeople ManagementIdentifying the right talent and investing time in developing them by frequent feedback on their performanceMonitor, Coach and mentor team members on a regular basisDevelopment of Jocks as per guidelinesMust have an eye to spot the local talent to fill up vacancies locallyTECHNICAL SKILLS & QUALIFICATION REQUIRED:Graduation / Post Graduation (Any specialisation) with 8 -12 years of relevant experienceExperience in digital content conceptualisationStrong branding focusMust be well-read in variety of areas and must keep up with the latest events in the city / cluster / countryMust know to read, write & speak English PERSONAL ATTRIBUTES:Excellent communication skillsGood interpersonal skillsPeople managementSuggest me some tests for the above jd. The duration should be at most 90 mins", "https://www.shl.com/products/product-catalog/view/interpersonal-communications/"),
+        ("Content Writer required, expert in English and SEO.", "https://www.shl.com/products/product-catalog/view/english-comprehension-new/"),
+        ("Content Writer required, expert in English and SEO.", "https://www.shl.com/solutions/products/product-catalog/view/drupal-new/"),
+        ("Content Writer required, expert in English and SEO.", "https://www.shl.com/solutions/products/product-catalog/view/written-english-v1/"),
+        ("Content Writer required, expert in English and SEO.", "https://www.shl.com/solutions/products/product-catalog/view/occupational-personality-questionnaire-opq32r/"),
+        ("Content Writer required, expert in English and SEO.", "https://www.shl.com/solutions/products/product-catalog/view/search-engine-optimization-new/")
+    ]
+    
+    # Create output directory
+    output_dir = Path("submission")
+    output_dir.mkdir(exist_ok=True)
+    
+    # Create CSV filename with firstname_lastname format
+    csv_filename = f"{firstname}_{lastname}.csv"
+    csv_path = output_dir / csv_filename
+    
+    # Write CSV file
+    with open(csv_path, 'w', newline='', encoding='utf-8') as f:
+        fieldnames = ['Query', 'Assessment_url']
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        
+        for query, url in predictions_data:
+            writer.writerow({
+                'Query': query,
+                'Assessment_url': url
+            })
+    
+    print(f"Created submission CSV: {csv_path}")
+    print(f"Total predictions: {len(predictions_data)}")
+    return csv_path
+
+if __name__ == "__main__":
+    if len(sys.argv) != 3:
+        print("Usage: python create_submission_csv.py <firstname> <lastname>")
+        print("Example: python create_submission_csv.py john doe")
+        sys.exit(1)
+    
+    firstname = sys.argv[1].lower()
+    lastname = sys.argv[2].lower()
+    
+    create_submission_csv(firstname, lastname)
