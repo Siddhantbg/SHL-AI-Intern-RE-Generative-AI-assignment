@@ -400,4 +400,16 @@ __pycache__/
 venv/
 env/
 .venv/
-.env/
+.env/# D
+eployment files (not needed for Vercel/Render)
+.github/
+deployment/
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+runtime.txt
+Procfile
+.env.example
+.env.*.example
+*DEPLOY*.md
+*DEPLOYMENT*.md
