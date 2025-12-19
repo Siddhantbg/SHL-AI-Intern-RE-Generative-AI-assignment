@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
+import Lottie from 'lottie-react';
+import globeAnimation from './assets/globe-animation.json';
 
 // Types for API responses
 interface AssessmentRecommendation {
@@ -775,18 +777,18 @@ const App: React.FC = () => {
                 {!loading && !error && recommendations.length === 0 && !query && (
                   <div className="text-center py-16">
                     <div 
-                      className="w-20 h-20 mx-auto mb-6 rounded-full flex items-center justify-center"
+                      className="w-24 h-24 mx-auto mb-6 rounded-full flex items-center justify-center"
                       style={{
                         background: 'linear-gradient(135deg, rgba(124, 124, 255, 0.1) 0%, rgba(179, 107, 255, 0.1) 100%)',
                         border: '2px solid rgba(124, 124, 255, 0.2)'
                       }}
                     >
-                      <div 
-                        className="text-3xl"
-                        style={{ color: '#7C7CFF' }}
-                      >
-                        ✨
-                      </div>
+                      <Lottie 
+                        animationData={globeAnimation}
+                        loop={true}
+                        autoplay={true}
+                        style={{ width: 80, height: 80 }}
+                      />
                     </div>
                     <p className="text-xl font-medium mb-2" style={{ color: '#E8EBF3' }}>
                       Ready to find assessments
