@@ -18,50 +18,58 @@ An intelligent recommendation system that helps hiring managers and recruiters f
 ```
 ├── src/                          # Source code
 │   ├── scraper/                 # Web scraping module
+│   │   ├── __init__.py
+│   │   ├── README.md
 │   │   └── shl_catalog_scraper.py
 │   ├── processing/              # Data processing pipeline
+│   │   ├── __init__.py
 │   │   ├── assessment_processor.py
 │   │   ├── embedding_generator.py
 │   │   └── vector_database.py
 │   ├── recommendation/          # Recommendation engine
+│   │   ├── __init__.py
 │   │   ├── recommendation_engine.py
 │   │   ├── query_processor.py
 │   │   └── balanced_ranker.py
 │   ├── api/                     # REST API
+│   │   ├── __init__.py
 │   │   ├── main.py
+│   │   ├── lightweight_main.py
 │   │   └── models.py
 │   ├── evaluation/              # Evaluation and optimization
+│   │   ├── __init__.py
 │   │   ├── evaluation_engine.py
+│   │   ├── metrics_calculator.py
 │   │   ├── optimization_pipeline.py
-│   │   └── performance_tracker.py
-│   └── config.py               # Configuration management
+│   │   ├── performance_tracker.py
+│   │   └── training_evaluation.py
+│   ├── __init__.py
+│   ├── config.py               # Configuration management
+│   └── config_lite.py          # Lightweight configuration
 ├── frontend/                    # React web application
 │   ├── src/
-│   ├── public/
-│   └── package.json
-├── tests/                       # Test suite
-│   ├── unit/                   # Unit tests
-│   └── integration/            # Integration tests
-├── docs/                       # Documentation
-│   ├── approach_document.md    # Solution methodology
-│   ├── api_documentation.md    # API reference
-│   ├── optimization_methodology.md
-│   └── troubleshooting_guide.md
-├── data/                       # Data files (gitignored)
-│   ├── scraped/               # Raw scraped data
-│   ├── processed/             # Processed assessments
-│   ├── embeddings/            # Generated embeddings
-│   └── evaluation/            # Training and test data
-├── deployment/                 # Deployment configurations
-│   └── gcp/                   # Google Cloud Platform configs
-├── examples/                   # Usage examples and demos
-├── requirements.txt           # Python dependencies
-├── requirements-dev.txt       # Development dependencies
-├── Dockerfile                 # Docker configuration
-├── docker-compose.yml         # Multi-service setup
-├── docker-compose.prod.yml    # Production configuration
-└── pyproject.toml            # Project configuration
+│   │   ├── components/         # React components
+│   │   ├── services/           # API services
+│   │   ├── types/              # TypeScript types
+│   │   ├── App.tsx
+│   │   └── main.tsx
+│   ├── public/                 # Static assets
+│   │   ├── globe-animation.json
+│   │   └── manifest.json
+│   ├── package.json
+│   ├── tsconfig.json
+│   ├── vite.config.ts
+│   └── vercel.json            # Vercel deployment config
+├── .env.production             # Production environment variables
+├── app.py                      # Main application entry point
+├── start.py                    # Application startup script
+├── requirements.txt            # Python dependencies
+├── vercel.json                # Vercel deployment configuration
+├── README.md                  # Project documentation
+└── .gitignore                 # Git ignore patterns
 ```
+
+**Note**: This project is optimized for deployment on **Vercel** (frontend) and **Render** (backend). All Docker, GitHub Actions, and other deployment infrastructure files have been removed to keep the repository clean and focused.
 
 ## 🚀 Quick Start
 
@@ -69,9 +77,8 @@ An intelligent recommendation system that helps hiring managers and recruiters f
 
 - **Python 3.9+** (3.11 recommended)
 - **Node.js 16+** (for frontend development)
-- **Docker & Docker Compose** (optional, for containerized deployment)
 - **Git** for version control
-- **Google Cloud Account** (for LLM API access)
+- **Google Gemini API Key** (for LLM functionality)
 
 ### Installation
 
@@ -104,14 +111,13 @@ pip install -r requirements-dev.txt
 
 4. **Configure environment variables**:
 ```bash
-# Copy example environment file
-cp .env.example .env
-
-# Edit .env with your configuration
+# Create .env file with your configuration
 # Required variables:
 # - GEMINI_API_KEY: Your Google Gemini API key
 # - ENVIRONMENT: development or production
 # - LOG_LEVEL: DEBUG, INFO, WARNING, ERROR
+
+# For production, use .env.production (already included)
 ```
 
 5. **Initialize the system**:
@@ -143,21 +149,15 @@ npm install
 npm start
 ```
 
-#### Option 2: Using Docker
+#### Option 2: Using the provided scripts
 
-**Development environment**:
+**Quick start with provided scripts**:
 ```bash
-# Build and start all services
-docker-compose up --build
+# Start the API server
+python start.py
 
-# Run in background
-docker-compose up -d --build
-```
-
-**Production environment**:
-```bash
-# Use production configuration
-docker-compose -f docker-compose.prod.yml up --build
+# Or use the main app entry point
+python app.py
 ```
 
 ### Accessing the Application
@@ -372,85 +372,67 @@ python generate_test_predictions.py
 
 ## 🚀 Deployment
 
-### Local Deployment
+This project is optimized for modern cloud deployment platforms:
 
-**Using Docker Compose**:
-```bash
-# Production build
-docker-compose -f docker-compose.prod.yml up --build
+### Frontend Deployment (Vercel)
 
-# With custom environment
-docker-compose --env-file .env.production up
-```
+The frontend is configured for **Vercel** deployment with `vercel.json`:
 
-### Google Cloud Platform Deployment
+1. **Connect to Vercel**:
+   - Import your GitHub repository to Vercel
+   - Vercel will automatically detect the React app in `/frontend`
+   - No additional configuration needed
 
-1. **Set up GCP project**:
-```bash
-# Install gcloud CLI
-# Create new project
-gcloud projects create shl-recommender-system
+2. **Automatic deployments**:
+   - Every push to `master` triggers a new deployment
+   - Preview deployments for pull requests
 
-# Set project
-gcloud config set project shl-recommender-system
-```
+### Backend Deployment (Render)
 
-2. **Deploy API to Cloud Run**:
-```bash
-# Build and deploy
-gcloud run deploy shl-api \
-  --source . \
-  --platform managed \
-  --region us-central1 \
-  --allow-unauthenticated \
-  --set-env-vars ENVIRONMENT=production
-```
+The backend API is configured for **Render** deployment:
 
-3. **Deploy frontend to Cloud Storage**:
-```bash
-# Build frontend
-cd frontend
-npm run build
+1. **Connect to Render**:
+   - Create a new Web Service on Render
+   - Connect your GitHub repository
+   - Use the following settings:
+     - **Build Command**: `pip install -r requirements.txt`
+     - **Start Command**: `python start.py`
+     - **Environment**: Python 3.11
 
-# Deploy to Cloud Storage
-gsutil -m cp -r build/* gs://your-frontend-bucket/
-```
-
-4. **Set up Cloud SQL** (optional):
-```bash
-# Create Cloud SQL instance
-gcloud sql instances create shl-db \
-  --database-version=POSTGRES_13 \
-  --tier=db-f1-micro \
-  --region=us-central1
-```
+2. **Environment Variables**:
+   Set these in your Render dashboard:
+   ```bash
+   ENVIRONMENT=production
+   DEBUG=false
+   LOG_LEVEL=INFO
+   API_HOST=0.0.0.0
+   API_PORT=10000
+   GEMINI_API_KEY=your_api_key_here
+   ```
 
 ### Production Configuration
 
-**Environment variables for production**:
+The `.env.production` file contains optimized settings for production deployment:
+
 ```bash
 ENVIRONMENT=production
 DEBUG=false
 LOG_LEVEL=INFO
 API_HOST=0.0.0.0
-API_PORT=8080
-CORS_ORIGINS=["https://your-frontend-domain.com"]
+API_PORT=8000
+FRONTEND_URL=https://your-vercel-app.vercel.app
+CORS_ORIGINS=["https://your-vercel-app.vercel.app"]
 ```
 
-**Docker production build**:
-```dockerfile
-# Multi-stage build for smaller image
-FROM python:3.11-slim as builder
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+### Local Production Testing
 
-FROM python:3.11-slim
-WORKDIR /app
-COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
-COPY . .
-EXPOSE 8080
-CMD ["uvicorn", "src.api.main:app", "--host", "0.0.0.0", "--port", "8080"]
+Test production configuration locally:
+```bash
+# Use production environment
+cp .env.production .env
+
+# Start with production settings
+python start.py
 ```
 
 ## 📊 Performance Metrics
