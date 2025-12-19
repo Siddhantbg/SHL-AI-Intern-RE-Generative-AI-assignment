@@ -56,16 +56,20 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# CORS setup with environment variable support
+# CORS setup with explicit frontend URL
 frontend_url = os.getenv('FRONTEND_URL', 'https://shl-ai-intern-re-generative-ai-assi.vercel.app')
 cors_origins = [
-    frontend_url,
-    "https://shl-ai-intern-re-generative-ai-assi.vercel.app",
+    "https://shl-ai-intern-re-generative-ai-assi.vercel.app",  # Explicit frontend URL
+    frontend_url,  # Environment variable
     "https://localhost:3000",
-    "http://localhost:3000",
+    "http://localhost:3000", 
     "http://localhost:3001",
-    "*"  # Fallback for development
+    "*"  # Allow all for now to debug
 ]
+
+# Debug logging
+logger.info(f"CORS Origins configured: {cors_origins}")
+logger.info(f"Frontend URL from env: {frontend_url}")
 
 app.add_middleware(
     CORSMiddleware,
@@ -239,6 +243,15 @@ async def health_check():
         assessment_count=len(simple_assessments_db),
         environment=settings.environment
     )
+
+@app.get("/cors-test")
+async def cors_test():
+    """Simple CORS test endpoint."""
+    return {
+        "message": "CORS is working!",
+        "frontend_url": os.getenv('FRONTEND_URL', 'not-set'),
+        "timestamp": time.time()
+    }
 
 @app.post("/recommend", response_model=RecommendationResponse)
 async def get_recommendations(request: RecommendationRequest):
