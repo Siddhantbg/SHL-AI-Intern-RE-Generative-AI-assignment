@@ -1,106 +1,137 @@
 import React, { useState, useEffect } from 'react';
 
-const App = () => {
-  console.log('🚀 SHL App component loaded');
-  const [apiStatus, setApiStatus] = useState('checking');
-  const [apiUrl] = useState(process.env.REACT_APP_API_URL || 'Not configured');
-  
+// Components
+import QueryInput from './components/QueryInput';
+import RecommendationTable from './components/RecommendationTable';
+import LoadingSpinner from './components/LoadingSpinner';
+import ErrorBoundary from './components/ErrorBoundary';
+
+interface Recommendation {
+  assessment_name: string;
+  url: string;
+  test_type: string;
+  category: string;
+  relevance_score: number;
+  explanation: string;
+  skills_matched: string[];
+}
+
+interface ApiResponse {
+  query: string;
+  recommendations: Recommendation[];
+  total_results: number;
+  processing_time: number;
+  query_info: {
+    processing_method: string;
+    confidence_score: number;
+  };
+}
+
+const App: React.FC = () => {
+  const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [currentQuery, setCurrentQuery] = useState<string>('');
+  const [apiStatus, setApiStatus] = useState<'checking' | 'online' | 'offline' | 'error'>('checking');
+
+  const apiUrl = process.env.REACT_APP_API_URL || 'https://shl-assessment-recommender.onrender.com';
+
   useEffect(() => {
-    console.log('🔗 API URL:', apiUrl);
-    
-    // Test API connection
-    fetch(`${process.env.REACT_APP_API_URL}/health`)
-      .then(response => {
-        console.log('✅ API Response:', response.status);
+    // Test API connection on component mount
+    const testApiConnection = async () => {
+      try {
+        const response = await fetch(`${apiUrl}/health`);
         setApiStatus(response.ok ? 'online' : 'error');
-      })
-      .catch(error => {
-        console.error('❌ API Error:', error);
+      } catch (error) {
+        console.error('API connection test failed:', error);
         setApiStatus('offline');
-      });
-  }, [apiUrl]);
-  
-  return React.createElement('div', {
-    style: { 
-      minHeight: '100vh', 
-      backgroundColor: '#f3f4f6', 
-      padding: '20px',
-      fontFamily: 'Arial, sans-serif'
-    }
-  }, 
-    React.createElement('div', {
-      style: { 
-        backgroundColor: 'white', 
-        padding: '30px', 
-        borderRadius: '8px', 
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-        maxWidth: '800px',
-        margin: '0 auto'
       }
-    },
-      React.createElement('h1', {
-        style: { 
-          fontSize: '32px', 
-          fontWeight: 'bold', 
-          color: '#1f2937', 
-          margin: '0 0 16px 0',
-          textAlign: 'center'
-        }
-      }, '🎯 SHL Assessment Recommender'),
+    };
+
+    testApiConnection();
+  }, [apiUrl]);
+
+  const handleQuerySubmit = async (query: string) => {
+    if (!query.trim()) {
+      setError('Please enter a job description or requirements');
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+    setCurrentQuery(query);
+
+    try {
+      const response = await fetch(`${apiUrl}/recommend`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ query }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+      }
+
+      const data: ApiResponse = await response.json();
+      setRecommendations(data.recommendations || []);
       
-      React.createElement('p', {
-        style: { 
-          fontSize: '16px', 
-          color: '#6b7280', 
-          margin: '0 0 24px 0',
-          textAlign: 'center'
-        }
-      }, 'Find the right assessments for your hiring needs'),
+      if (data.recommendations.length === 0) {
+        setError('No matching assessments found for your query. Try using different keywords or a more general description.');
+      }
+    } catch (err) {
+      console.error('Error fetching recommendations:', err);
+      setError(err instanceof Error ? err.message : 'Failed to fetch recommendations. Please try again.');
+      setRecommendations([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-      React.createElement('div', {
-        style: {
-          backgroundColor: '#f9fafb',
-          padding: '20px',
-          borderRadius: '6px',
-          border: '1px solid #e5e7eb'
-        }
-      },
-        React.createElement('h2', {
-          style: { fontSize: '18px', margin: '0 0 12px 0', color: '#374151' }
-        }, '🚀 System Status'),
-        React.createElement('p', {
-          style: { margin: '0', color: '#059669' }
-        }, '✅ Frontend: Successfully deployed on Vercel'),
-        React.createElement('p', {
-          style: { margin: '8px 0 0 0', color: apiStatus === 'online' ? '#059669' : '#dc2626' }
-        }, `${apiStatus === 'online' ? '✅' : '❌'} Backend: ${apiStatus} (${apiUrl})`)
-      ),
-
-      React.createElement('div', {
-        style: {
-          marginTop: '24px',
-          padding: '20px',
-          backgroundColor: '#eff6ff',
-          borderRadius: '6px',
-          border: '1px solid #bfdbfe'
-        }
-      },
-        React.createElement('h3', {
-          style: { fontSize: '16px', margin: '0 0 12px 0', color: '#1e40af' }
-        }, '📝 React is Working!'),
-        React.createElement('p', {
-          style: { margin: '0 0 8px 0', color: '#1e40af' }
-        }, '✅ React components are rendering'),
-        React.createElement('p', {
-          style: { margin: '0 0 8px 0', color: '#1e40af' }
-        }, '✅ JavaScript bundle loaded successfully'),
-        React.createElement('p', {
-          style: { margin: '0', color: '#1e40af' }
-        }, '✅ Ready to add full functionality')
-      )
-    )
-  );
-};
+  return (
+    <ErrorBoundary>
+      <div className="min-h-screen bg-gray-50">
+        {/* Header */}
+        <header className="bg-white shadow-sm border-b border-gray-200">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="flex-shrink-0">
+                  <svg className="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                  </svg>
+                </div>
+                <div>
+                  <h1 className="text-2xl font-bold text-gray-900">SHL Assessment Recommender</h1>
+                  <p className="text-sm text-gray-600">Find the right assessments for your hiring needs</p>
+                </div>
+              </div>
+              <div className="flex items-center space-x-4">
+                <div className={`flex items-center space-x-2 px-3 py-1 rounded-full text-sm ${
+                  apiStatus === 'online' 
+                    ? 'bg-green-100 text-green-800' 
+                    : apiStatus === 'offline' 
+                    ? 'bg-red-100 text-red-800'
+                    : 'bg-yellow-100 text-yellow-800'
+                }`}>
+                  <div className={`w-2 h-2 rounded-full ${
+                    apiStatus === 'online' 
+                      ? 'bg-green-500' 
+                      : apiStatus === 'offline' 
+                      ? 'bg-red-500'
+                      : 'bg-yellow-500'
+                  }`}></div>
+                  <span className="font-medium">
+                    {apiStatus === 'online' ? 'API Online' : 
+                     apiStatus === 'offline' ? 'API Offline' : 
+                     'Checking API...'}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </header>
 
         {/* Main Content */}
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -207,6 +238,6 @@ const App = () => {
       </div>
     </ErrorBoundary>
   );
-}
+};
 
 export default App;
