@@ -56,11 +56,14 @@ app = FastAPI(
 )
 
 # Add CORS middleware
+frontend_url = os.getenv('FRONTEND_URL', 'https://shl-ai-intern-re-generative-ai-assi.vercel.app')
 cors_origins = ["*"] if settings.debug else [
+    frontend_url,
     "https://shl-ai-intern-re-generative-ai-assi.vercel.app",
     "https://shl-ai-intern-re-generative-ai-assignment.vercel.app",
     "https://localhost:3000",
     "http://localhost:3000",
+    "http://localhost:3001",
     "*"  # Temporary fix for CORS issues
 ]
 

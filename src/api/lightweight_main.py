@@ -56,10 +56,20 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# Minimal CORS setup
+# CORS setup with environment variable support
+frontend_url = os.getenv('FRONTEND_URL', 'https://shl-ai-intern-re-generative-ai-assi.vercel.app')
+cors_origins = [
+    frontend_url,
+    "https://shl-ai-intern-re-generative-ai-assi.vercel.app",
+    "https://localhost:3000",
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "*"  # Fallback for development
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Simplified for free tier
+    allow_origins=cors_origins,
     allow_credentials=True,
     allow_methods=["GET", "POST"],
     allow_headers=["*"],
