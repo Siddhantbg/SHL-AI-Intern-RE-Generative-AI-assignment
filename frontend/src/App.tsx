@@ -6,7 +6,7 @@ const App: React.FC = () => {
   console.log('🎯 [APP] App component initializing...');
   
   const [apiStatus, setApiStatus] = useState<'checking' | 'online' | 'offline'>('checking');
-  const apiUrl = process.env.REACT_APP_API_URL || 'https://shl-assessment-recommender.onrender.com';
+  const apiUrl = import.meta.env.VITE_API_URL || 'https://shl-assessment-recommender.onrender.com';
   
   console.log('🔗 [APP] API URL configured:', apiUrl);
 

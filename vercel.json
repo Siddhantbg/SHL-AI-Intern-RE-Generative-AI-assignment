@@ -5,13 +5,13 @@
       "src": "frontend/package.json",
       "use": "@vercel/static-build",
       "config": {
-        "distDir": "build"
+        "distDir": "dist"
       }
     }
   ],
   "routes": [
     {
-      "src": "/static/(.*)",
+      "src": "/assets/(.*)",
       "headers": {
         "cache-control": "s-maxage=31536000,immutable"
       }
@@ -22,8 +22,6 @@
     }
   ],
   "env": {
-    "REACT_APP_API_URL": "https://shl-assessment-recommender.onrender.com",
-    "GENERATE_SOURCEMAP": "false",
-    "CI": "false"
+    "VITE_API_URL": "https://shl-assessment-recommender.onrender.com"
   }
 }
