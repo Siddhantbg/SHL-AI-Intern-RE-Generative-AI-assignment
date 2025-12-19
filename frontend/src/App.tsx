@@ -281,8 +281,8 @@ const App: React.FC = () => {
         </div>
       </nav>
 
-      <div className="py-8 px-4">
-        <div className="max-w-6xl mx-auto">
+      <div className="py-6 sm:py-8 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold mb-4" style={{ color: '#E8EBF3' }}>
@@ -327,11 +327,11 @@ const App: React.FC = () => {
           </div>
 
           {/* Main Content */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 lg:gap-8">
             {/* Query Input Section */}
-            <div className="lg:col-span-1">
+            <div className="xl:col-span-1">
               <div 
-                className="rounded-xl p-6" 
+                className="rounded-xl p-4 sm:p-6 w-full max-w-full" 
                 style={{ 
                   backgroundColor: '#12162A',
                   boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
@@ -348,8 +348,8 @@ const App: React.FC = () => {
                   Job Description
                 </h2>
                 
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <div>
+                <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-full">
+                  <div className="w-full">
                     <label htmlFor="query" className="block text-sm font-medium mb-2" style={{ color: '#A6ADC8' }}>
                       Enter job requirements
                     </label>
@@ -358,11 +358,13 @@ const App: React.FC = () => {
                       value={query}
                       onChange={(e) => setQuery(e.target.value)}
                       placeholder="Describe the role, required skills, and qualifications..."
-                      className="w-full h-32 px-3 py-2 rounded-lg resize-none"
+                      className="w-full h-32 px-3 py-2 rounded-lg resize-none box-border"
                       style={{ 
                         backgroundColor: '#0F1325',
                         border: '1px solid rgba(255, 255, 255, 0.06)',
-                        color: '#E8EBF3'
+                        color: '#E8EBF3',
+                        minWidth: 0,
+                        maxWidth: '100%'
                       }}
                       onFocus={(e) => {
                         e.target.style.borderColor = '#7C7CFF';
@@ -577,9 +579,9 @@ const App: React.FC = () => {
             </div>
 
             {/* Results Section */}
-            <div className="lg:col-span-2" ref={resultsRef}>
+            <div className="xl:col-span-2 w-full max-w-full" ref={resultsRef}>
               <div 
-                className="rounded-xl p-6" 
+                className="rounded-xl p-4 sm:p-6 w-full max-w-full" 
                 style={{ 
                   backgroundColor: '#12162A',
                   boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
