@@ -327,9 +327,9 @@ const App: React.FC = () => {
           </div>
 
           {/* Main Content */}
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 xl:gap-12">
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-12 xl:gap-16">
             {/* Query Input Section */}
-            <div className="xl:col-span-1">
+            <div className="xl:col-span-1 mb-12 xl:mb-0">
               <div 
                 className="rounded-xl p-4 sm:p-6 w-full max-w-full" 
                 style={{ 
@@ -579,7 +579,7 @@ const App: React.FC = () => {
             </div>
 
             {/* Results Section */}
-            <div className="xl:col-span-2 w-full max-w-full" ref={resultsRef}>
+            <div className="xl:col-span-2 w-full max-w-full mt-12 xl:mt-0" ref={resultsRef}>
               <div 
                 className="rounded-xl p-4 sm:p-6 w-full max-w-full" 
                 style={{ 
