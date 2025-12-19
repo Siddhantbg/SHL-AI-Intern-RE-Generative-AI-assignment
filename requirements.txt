@@ -1,20 +1,17 @@
-# Minimal dependencies for Render free tier (512MB RAM)
+# Ultra-minimal dependencies for Render free tier (512MB RAM)
 fastapi>=0.104.1,<0.110.0
 uvicorn>=0.24.0,<0.30.0
-pydantic>=2.5.0,<3.0.0
-pydantic-settings>=2.1.0,<3.0.0
 
 # LLM integration - only Gemini (lightweight)
 google-generativeai>=0.3.2,<1.0.0
 
-# Essential utilities only
-python-dotenv>=1.0.0,<2.0.0
-
-# Removed heavy ML dependencies:
-# - sentence-transformers (uses ~200MB RAM)
-# - faiss-cpu (uses ~100MB RAM) 
-# - numpy (uses ~50MB RAM)
-# - torch/transformers (uses ~300MB+ RAM)
+# Removed ALL heavy dependencies:
+# - pydantic-settings (not needed in standalone app)
+# - python-dotenv (using os.getenv directly)
+# - sentence-transformers (~200MB RAM)
+# - faiss-cpu (~100MB RAM) 
+# - numpy (~50MB RAM)
+# - torch/transformers (~300MB+ RAM)
 #
-# Total memory savings: ~650MB+
-# Now using simple text similarity instead of ML embeddings
+# Total memory savings: ~700MB+
+# Using simple text similarity instead of ML embeddings
