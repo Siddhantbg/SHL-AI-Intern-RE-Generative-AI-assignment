@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Lottie from 'lottie-react';
-import globeAnimation from './assets/globe-animation.json';
 
 // Types for API responses
 interface AssessmentRecommendation {
@@ -45,6 +44,7 @@ const App: React.FC = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedTestType, setSelectedTestType] = useState<string>('all');
+  const [globeAnimation, setGlobeAnimation] = useState<any>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
   
   const apiUrl = import.meta.env.VITE_API_URL || 'https://shl-ai-intern-re-generative-ai-assignment.onrender.com';
@@ -52,6 +52,12 @@ const App: React.FC = () => {
   // Check API health on component mount
   useEffect(() => {
     checkApiHealth();
+    
+    // Load Lottie animation
+    fetch('/globe-animation.json')
+      .then(response => response.json())
+      .then(data => setGlobeAnimation(data))
+      .catch(error => console.error('Failed to load animation:', error));
   }, []);
 
   const checkApiHealth = async () => {
@@ -783,12 +789,21 @@ const App: React.FC = () => {
                         border: '2px solid rgba(124, 124, 255, 0.2)'
                       }}
                     >
-                      <Lottie 
-                        animationData={globeAnimation}
-                        loop={true}
-                        autoplay={true}
-                        style={{ width: 80, height: 80 }}
-                      />
+                      {globeAnimation ? (
+                        <Lottie 
+                          animationData={globeAnimation}
+                          loop={true}
+                          autoplay={true}
+                          style={{ width: 80, height: 80 }}
+                        />
+                      ) : (
+                        <div 
+                          className="text-3xl"
+                          style={{ color: '#7C7CFF' }}
+                        >
+                          ✨
+                        </div>
+                      )}
                     </div>
                     <p className="text-xl font-medium mb-2" style={{ color: '#E8EBF3' }}>
                       Ready to find assessments
