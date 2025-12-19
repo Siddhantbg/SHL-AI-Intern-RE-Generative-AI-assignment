@@ -315,3 +315,89 @@ deployment/
 # Cleanup scripts (temporary)
 cleanup_repo.py
 git_cleanup_commands.txt
+
+# Additional files unnecessary for deployment
+test.html
+verify_deployment.py
+deploy_production.py
+analyze_relevance.py
+load_test.py
+security_audit.py
+final_qa_report.py
+final_qa_report_*.json
+validate_submission.py
+generate_test_predictions.py
+test_*.py
+*_test.py
+demo_*.py
+
+# Development and testing files
+htmlcov/
+.pytest_cache/
+coverage.xml
+.coverage
+
+# Temporary files and backups
+*.backup
+*.bak
+*~
+*.tmp
+
+# IDE specific files
+.vscode/
+.idea/
+*.sublime-*
+*.code-workspace
+
+# OS specific files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Docker development files (keep production ones)
+Dockerfile.backup
+
+# Environment examples (keep the examples, ignore actual env files)
+.env
+.env.local
+.env.development
+.env.test
+
+# Data files (already covered above but being explicit)
+data/
+*.csv
+*.json
+!frontend/public/*.json
+!package*.json
+!tsconfig*.json
+!vercel.json
+*.pkl
+*.h5
+*.bin
+
+# Log files
+logs/
+*.log
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Node modules and build files
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+env/
+.venv/
+.env/
