@@ -73,9 +73,9 @@ logger.info(f"Frontend URL from env: {frontend_url}")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=cors_origins,
+    allow_origins=["*"],  # Temporarily allow all origins
     allow_credentials=True,
-    allow_methods=["GET", "POST"],
+    allow_methods=["*"],
     allow_headers=["*"],
 )
 
@@ -232,26 +232,46 @@ async def get_llm_recommendations(query: str) -> List[Dict[str, Any]]:
         return []
 
 @app.get("/health", response_model=HealthResponse)
-async def health_check():
+async def health_check(request: Request):
     """Health check endpoint."""
     uptime = time.time() - startup_time
     
-    return HealthResponse(
+    response = HealthResponse(
         status="healthy",
         version="1.0.0-lite", 
         uptime=uptime,
         assessment_count=len(simple_assessments_db),
         environment=settings.environment
     )
+    
+    # Create JSONResponse with explicit CORS headers
+    json_response = JSONResponse(content=response.dict())
+    json_response.headers["Access-Control-Allow-Origin"] = "*"
+    json_response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+    json_response.headers["Access-Control-Allow-Headers"] = "*"
+    
+    return json_response
+
+@app.options("/{path:path}")
+async def options_handler(request: Request):
+    """Handle preflight OPTIONS requests."""
+    response = JSONResponse(content={"message": "OK"})
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
+    response.headers["Access-Control-Allow-Headers"] = "*"
+    response.headers["Access-Control-Max-Age"] = "86400"
+    return response
 
 @app.get("/cors-test")
 async def cors_test():
     """Simple CORS test endpoint."""
-    return {
+    response = JSONResponse(content={
         "message": "CORS is working!",
         "frontend_url": os.getenv('FRONTEND_URL', 'not-set'),
         "timestamp": time.time()
-    }
+    })
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    return response
 
 @app.post("/recommend", response_model=RecommendationResponse)
 async def get_recommendations(request: RecommendationRequest):
