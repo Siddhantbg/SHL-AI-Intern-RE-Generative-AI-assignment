@@ -292,38 +292,7 @@ const App: React.FC = () => {
               Find the right assessments for your hiring requirements
             </p>
             
-            {/* System Status */}
-            <div 
-              className="rounded-xl p-6 mb-6 max-w-2xl mx-auto" 
-              style={{ 
-                backgroundColor: '#12162A',
-                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
-                border: '1px solid rgba(255, 255, 255, 0.06)'
-              }}
-            >
-              <h2 className="text-lg font-semibold mb-4" style={{ color: '#E8EBF3' }}>System Status</h2>
-              <div className="space-y-3 text-sm">
-                <div className="flex items-center justify-center space-x-2">
-                  <div className="w-2 h-2 rounded-full" style={{ backgroundColor: '#2EE59D' }}></div>
-                  <span style={{ color: '#E8EBF3' }}>Frontend: Application loaded</span>
-                </div>
-                <div className="flex items-center justify-center space-x-2">
-                  <div 
-                    className="w-2 h-2 rounded-full" 
-                    style={{ backgroundColor: apiStatus === 'online' ? '#2EE59D' : '#DC2626' }}
-                  ></div>
-                  <span style={{ color: '#E8EBF3' }}>
-                    Backend: {apiStatus === 'online' ? 'Connected' : 'Disconnected'}
-                  </span>
-                </div>
-                {healthData && (
-                  <div style={{ color: '#7C84A3' }} className="text-xs">
-                    Version {healthData.version} | {healthData.assessment_count} assessments | 
-                    Uptime {Math.round(healthData.uptime)}s
-                  </div>
-                )}
-              </div>
-            </div>
+
           </div>
 
           {/* Main Content */}
