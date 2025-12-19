@@ -30,7 +30,7 @@ try {
   }
 } catch (error) {
   console.error('💥 [INDEX] Critical error during React initialization:', error);
-  console.error('📋 [INDEX] Error stack:', error.stack);
+  console.error('📋 [INDEX] Error stack:', error instanceof Error ? error.stack : 'No stack trace');
 }
 
 // Performance monitoring

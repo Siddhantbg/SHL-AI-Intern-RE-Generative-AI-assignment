@@ -1,23 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
 // Components
-console.log('📦 [APP] Importing components...');
-try {
-  console.log('📦 [APP] Importing QueryInput...');
-  import('./components/QueryInput').then(() => console.log('✅ [APP] QueryInput imported'));
-  
-  console.log('📦 [APP] Importing RecommendationTable...');
-  import('./components/RecommendationTable').then(() => console.log('✅ [APP] RecommendationTable imported'));
-  
-  console.log('📦 [APP] Importing LoadingSpinner...');
-  import('./components/LoadingSpinner').then(() => console.log('✅ [APP] LoadingSpinner imported'));
-  
-  console.log('📦 [APP] Importing ErrorBoundary...');
-  import('./components/ErrorBoundary').then(() => console.log('✅ [APP] ErrorBoundary imported'));
-} catch (error) {
-  console.error('💥 [APP] Component import error:', error);
-}
-
 import QueryInput from './components/QueryInput';
 import RecommendationTable from './components/RecommendationTable';
 import LoadingSpinner from './components/LoadingSpinner';
@@ -78,7 +61,7 @@ const App: React.FC = () => {
         setApiStatus(status);
       } catch (error) {
         console.error('❌ [APP] API connection test failed:', error);
-        console.error('📋 [APP] Error details:', error.message);
+        console.error('📋 [APP] Error details:', error instanceof Error ? error.message : 'Unknown error');
         setApiStatus('offline');
       }
     };

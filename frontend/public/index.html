@@ -2,166 +2,19 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
     <meta
       name="description"
       content="SHL Assessment Recommendation System - Find relevant SHL assessments based on job descriptions"
     />
-    <link rel="apple-touch-icon" href="/logo192.png" />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <title>SHL Assessment Recommender</title>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
-    
-    <script>
-      console.log('🌐 HTML loaded');
-      
-      // Create the app directly in HTML/JS if React fails
-      function createFallbackApp() {
-        const root = document.getElementById('root');
-        root.innerHTML = `
-          <div style="min-height: 100vh; background-color: #f3f4f6; padding: 20px; font-family: Arial, sans-serif;">
-            <div style="background-color: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); max-width: 800px; margin: 0 auto;">
-              <h1 style="font-size: 32px; font-weight: bold; color: #1f2937; margin: 0 0 16px 0; text-align: center;">
-                🎯 SHL Assessment Recommender
-              </h1>
-              
-              <p style="font-size: 16px; color: #6b7280; margin: 0 0 24px 0; text-align: center;">
-                Find the right assessments for your hiring needs
-              </p>
-
-              <div style="background-color: #f9fafb; padding: 20px; border-radius: 6px; border: 1px solid #e5e7eb; margin-bottom: 20px;">
-                <h2 style="font-size: 18px; margin: 0 0 12px 0; color: #374151;">🚀 System Status</h2>
-                <p style="margin: 0; color: #059669;">✅ Frontend: Successfully deployed on Vercel</p>
-                <p id="api-status" style="margin: 8px 0 0 0; color: #f59e0b;">🔄 Backend: Checking connection...</p>
-              </div>
-
-              <div style="background-color: #eff6ff; padding: 20px; border-radius: 6px; border: 1px solid #bfdbfe; margin-bottom: 20px;">
-                <h3 style="font-size: 16px; margin: 0 0 12px 0; color: #1e40af;">📝 Quick Test</h3>
-                <input type="text" id="query-input" placeholder="Enter job description..." style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 4px; margin-bottom: 10px;">
-                <button onclick="testAPI()" style="background-color: #3b82f6; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">Test API Connection</button>
-                <div id="test-result" style="margin-top: 10px;"></div>
-              </div>
-            </div>
-          </div>
-        `;
-        
-        // Test API connection
-        testAPIConnection();
-      }
-      
-      function testAPIConnection(retryCount = 0) {
-        const apiUrl = 'https://shl-ai-intern-re-generative-ai-assignment.onrender.com';
-        const statusEl = document.getElementById('api-status');
-        
-        if (retryCount === 0) {
-          statusEl.innerHTML = '🔄 Backend: Waking up server (this may take 30-60 seconds)...';
-          statusEl.style.color = '#f59e0b';
-        } else {
-          statusEl.innerHTML = `🔄 Backend: Waking up... (attempt ${retryCount + 1}/3)`;
-          statusEl.style.color = '#f59e0b';
-        }
-        
-        // Render.com free tier sleeps after 15 minutes, takes time to wake up
-        fetch(apiUrl + '/health', { 
-          method: 'GET',
-          headers: { 'Cache-Control': 'no-cache' }
-        })
-          .then(response => {
-            if (response.ok) {
-              statusEl.innerHTML = '✅ Backend: Online and connected (free tier - sleeps after 15min)';
-              statusEl.style.color = '#059669';
-            } else {
-              statusEl.innerHTML = `❌ Backend: Error ${response.status} - <button onclick="testAPIConnection()" style="background: #3b82f6; color: white; padding: 4px 8px; border: none; border-radius: 3px; cursor: pointer; font-size: 12px;">Retry</button>`;
-              statusEl.style.color = '#dc2626';
-            }
-          })
-          .catch(error => {
-            if (retryCount < 2) {
-              // Auto-retry up to 3 times with 10-second delays
-              setTimeout(() => {
-                testAPIConnection(retryCount + 1);
-              }, 10000);
-            } else {
-              statusEl.innerHTML = `🔄 Backend: Sleeping (free tier) - <button onclick="testAPIConnection()" style="background: #3b82f6; color: white; padding: 4px 8px; border: none; border-radius: 3px; cursor: pointer; font-size: 12px;">Wake Up Server</button>`;
-              statusEl.style.color = '#f59e0b';
-            }
-            console.error('API Error:', error);
-          });
-      }
-      
-      function testAPI() {
-        const query = document.getElementById('query-input').value;
-        const resultEl = document.getElementById('test-result');
-        
-        if (!query) {
-          resultEl.innerHTML = '<p style="color: #f59e0b;">Please enter a job description</p>';
-          return;
-        }
-        
-        if (query.length < 10) {
-          resultEl.innerHTML = '<p style="color: #f59e0b;">Please enter at least 10 characters for a proper test</p>';
-          return;
-        }
-        
-        resultEl.innerHTML = '<p style="color: #3b82f6;">🔄 Testing API... (may take 30-60 seconds if server is sleeping)</p>';
-        
-        fetch('https://shl-ai-intern-re-generative-ai-assignment.onrender.com/recommend', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ query: query })
-        })
-        .then(response => {
-          if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-          }
-          return response.json();
-        })
-        .then(data => {
-          resultEl.innerHTML = `<p style="color: #059669;">✅ API Test Successful!</p><pre style="background: #f3f4f6; padding: 10px; border-radius: 4px; font-size: 12px; overflow-x: auto;">${JSON.stringify(data, null, 2)}</pre>`;
-        })
-        .catch(error => {
-          if (error.message.includes('502') || error.message.includes('Failed to fetch')) {
-            resultEl.innerHTML = `<p style="color: #f59e0b;">🔄 Server is sleeping (free tier). <button onclick="testAPI()" style="background: #3b82f6; color: white; padding: 4px 8px; border: none; border-radius: 3px; cursor: pointer;">Try Again</button></p>`;
-          } else {
-            resultEl.innerHTML = `<p style="color: #dc2626;">❌ API Test Failed: ${error.message}</p>`;
-          }
-        });
-      }
-      
-      // Try React first, fallback to HTML if it fails
-      setTimeout(() => {
-        const rootContent = document.getElementById('root').innerHTML;
-        if (!rootContent || rootContent.trim() === '') {
-          console.log('🔄 React failed, using fallback app');
-          createFallbackApp();
-        }
-      }, 3000);
-      
-      // Keep-alive ping every 10 minutes to prevent sleeping (optional)
-      function keepAlive() {
-        fetch('https://shl-ai-intern-re-generative-ai-assignment.onrender.com/health')
-          .then(() => console.log('🔄 Keep-alive ping sent'))
-          .catch(() => console.log('🔄 Keep-alive ping failed (server sleeping)'));
-      }
-      
-      // Uncomment the line below to enable keep-alive (prevents sleeping)
-      // setInterval(keepAlive, 10 * 60 * 1000); // Every 10 minutes
-    </script>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
-
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
-
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
   </body>
 </html>
