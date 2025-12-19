@@ -48,54 +48,119 @@ const App: React.FC = () => {
   const [animationError, setAnimationError] = useState<string>('');
   const resultsRef = useRef<HTMLDivElement>(null);
   
-  // Simple test animation data
-  const testAnimation = {
-    "v": "5.5.7",
-    "fr": 60,
+  // Embedded globe animation that works in both local and production
+  const embeddedGlobeAnimation = {
+    "v": "5.7.4",
+    "fr": 30,
     "ip": 0,
-    "op": 60,
+    "op": 90,
     "w": 100,
     "h": 100,
-    "nm": "test",
+    "nm": "Globe",
     "ddd": 0,
     "assets": [],
     "layers": [{
       "ddd": 0,
       "ind": 1,
       "ty": 4,
-      "nm": "circle",
+      "nm": "Globe",
       "sr": 1,
       "ks": {
         "o": {"a": 0, "k": 100},
-        "r": {"a": 1, "k": [{"i": {"x": [0.833], "y": [0.833]}, "o": {"x": [0.167], "y": [0.167]}, "t": 0, "s": [0]}, {"t": 60, "s": [360]}]},
+        "r": {"a": 1, "k": [{"i": {"x": [0.833], "y": [0.833]}, "o": {"x": [0.167], "y": [0.167]}, "t": 0, "s": [0]}, {"t": 90, "s": [360]}]},
         "p": {"a": 0, "k": [50, 50, 0]},
         "a": {"a": 0, "k": [0, 0, 0]},
-        "s": {"a": 0, "k": [100, 100, 100]}
+        "s": {"a": 0, "k": [80, 80, 100]}
       },
       "ao": 0,
-      "shapes": [{
-        "ty": "gr",
-        "it": [{
-          "d": 1,
-          "ty": "el",
-          "s": {"a": 0, "k": [20, 20]},
-          "p": {"a": 0, "k": [0, 0]}
-        }, {
-          "ty": "st",
-          "c": {"a": 0, "k": [0.5, 0.5, 1, 1]},
-          "o": {"a": 0, "k": 100},
-          "w": {"a": 0, "k": 2}
-        }, {
-          "ty": "tr",
-          "p": {"a": 0, "k": [0, 0]},
-          "a": {"a": 0, "k": [0, 0]},
-          "s": {"a": 0, "k": [100, 100]},
-          "r": {"a": 0, "k": 0},
-          "o": {"a": 0, "k": 100}
-        }]
-      }],
+      "shapes": [
+        {
+          "ty": "gr",
+          "it": [{
+            "d": 1,
+            "ty": "el",
+            "s": {"a": 0, "k": [60, 60]},
+            "p": {"a": 0, "k": [0, 0]}
+          }, {
+            "ty": "st",
+            "c": {"a": 0, "k": [0.486, 0.486, 1, 1]},
+            "o": {"a": 0, "k": 100},
+            "w": {"a": 0, "k": 2.5}
+          }, {
+            "ty": "tr",
+            "p": {"a": 0, "k": [0, 0]},
+            "a": {"a": 0, "k": [0, 0]},
+            "s": {"a": 0, "k": [100, 100]},
+            "r": {"a": 0, "k": 0},
+            "o": {"a": 0, "k": 100}
+          }]
+        },
+        {
+          "ty": "gr",
+          "it": [{
+            "ty": "rc",
+            "s": {"a": 0, "k": [50, 2]},
+            "p": {"a": 0, "k": [0, 0]},
+            "r": {"a": 0, "k": 0}
+          }, {
+            "ty": "st",
+            "c": {"a": 0, "k": [0.486, 0.486, 1, 1]},
+            "o": {"a": 0, "k": 100},
+            "w": {"a": 0, "k": 2}
+          }, {
+            "ty": "tr",
+            "p": {"a": 0, "k": [0, -15]},
+            "a": {"a": 0, "k": [0, 0]},
+            "s": {"a": 0, "k": [100, 100]},
+            "r": {"a": 0, "k": 0},
+            "o": {"a": 0, "k": 100}
+          }]
+        },
+        {
+          "ty": "gr",
+          "it": [{
+            "ty": "rc",
+            "s": {"a": 0, "k": [50, 2]},
+            "p": {"a": 0, "k": [0, 0]},
+            "r": {"a": 0, "k": 0}
+          }, {
+            "ty": "st",
+            "c": {"a": 0, "k": [0.486, 0.486, 1, 1]},
+            "o": {"a": 0, "k": 100},
+            "w": {"a": 0, "k": 2}
+          }, {
+            "ty": "tr",
+            "p": {"a": 0, "k": [0, 15]},
+            "a": {"a": 0, "k": [0, 0]},
+            "s": {"a": 0, "k": [100, 100]},
+            "r": {"a": 0, "k": 0},
+            "o": {"a": 0, "k": 100}
+          }]
+        },
+        {
+          "ty": "gr",
+          "it": [{
+            "ty": "rc",
+            "s": {"a": 0, "k": [2, 50]},
+            "p": {"a": 0, "k": [0, 0]},
+            "r": {"a": 0, "k": 0}
+          }, {
+            "ty": "st",
+            "c": {"a": 0, "k": [0.486, 0.486, 1, 1]},
+            "o": {"a": 0, "k": 100},
+            "w": {"a": 0, "k": 2}
+          }, {
+            "ty": "tr",
+            "p": {"a": 0, "k": [0, 0]},
+            "a": {"a": 0, "k": [0, 0]},
+            "s": {"a": 0, "k": [100, 100]},
+            "r": {"a": 0, "k": 0},
+            "o": {"a": 0, "k": 100}
+          }]
+        }
+      ],
       "ip": 0,
-      "op": 60,
+      "op": 90,
       "st": 0,
       "bm": 0
     }]
@@ -107,29 +172,9 @@ const App: React.FC = () => {
   useEffect(() => {
     checkApiHealth();
     
-    // Load Lottie animation
-    const loadAnimation = async () => {
-      try {
-        console.log('Attempting to load animation from:', window.location.origin + '/globe-animation.json');
-        const response = await fetch('/globe-animation.json');
-        console.log('Animation fetch response:', response.status, response.ok);
-        
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        console.log('Globe animation loaded successfully');
-        setGlobeAnimation(data);
-      } catch (error) {
-        console.error('Failed to load globe animation:', error);
-        setAnimationError(error.message);
-        console.log('Using test animation as fallback');
-        setGlobeAnimation(testAnimation);
-      }
-    };
-    
-    loadAnimation();
+    // Use embedded globe animation for reliable cross-environment compatibility
+    console.log('Setting embedded globe animation');
+    setGlobeAnimation(embeddedGlobeAnimation);
   }, []);
 
   const checkApiHealth = async () => {
