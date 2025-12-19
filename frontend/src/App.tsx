@@ -327,7 +327,7 @@ const App: React.FC = () => {
           </div>
 
           {/* Main Content */}
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 xl:gap-12">
             {/* Query Input Section */}
             <div className="xl:col-span-1">
               <div 
